@@ -38,8 +38,6 @@ int main(void)
     return 0;
 }
 
-// bla bla bla
-
 int LinearSolver(double b, double c, double *x)
 {
     if (FloatEqual(b, 0.0))
@@ -185,6 +183,12 @@ int GetCoeff(double *coeff, int symb) // returns 1 if succeeded, 0 if failed
     }
 
     if (i == 0)
+    {
+        printf("Invalid input\n");
+        return 0;
+    }
+
+    if (input[i - 1] == '.')
     {
         printf("Invalid input\n");
         return 0;
