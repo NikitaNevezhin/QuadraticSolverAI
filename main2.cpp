@@ -8,6 +8,13 @@
 #define POLYNOMIAL_DEGREE 2 // for quadratic equation
 #define SIZE 100
 
+enum solutions {
+    INFINITE_SOLUTIONS = -1,
+    NO_SOLUTIONS = 0,
+    ONE_SOLUTION = 1,
+    TWO_SOLUTIONS = 2
+};
+
 int LinearSolver(double b, double c, double *x);
 int QuadraticSolver(double a, double b, double c, double *x1, double *x2);
 bool FloatEqual(double x, double y);
@@ -102,16 +109,16 @@ void QuadraticSolverResults(int total_solutions, double x1, double x2)
 {
     switch (total_solutions)
     {
-        case 0:
+        case NO_SOLUTIONS:
             printf("There are no real solutions\n");
             break;
-        case 1:
+        case ONE_SOLUTION:
             printf("There is a single solution: %lf\n", x1);
             break;
-        case 2:
+        case TWO_SOLUTIONS:
             printf("There are two solutions: %lf and %lf\n", x1, x2);
             break;
-        case -1:
+        case INFINITE_SOLUTIONS:
             printf("There is an infinite number of solutions\n");
             break;
         default:
