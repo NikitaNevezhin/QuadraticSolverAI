@@ -10,6 +10,16 @@
 #define SIZE 100
 #define SAMPLES_AMOUNT 10
 
+
+enum Roots
+{
+    INFINITE_NUMBER = -1,
+    ZERO = 0,
+    ONE = 1,
+    TWO = 2
+};
+
+
 struct Equation
 {
     double a;
@@ -20,14 +30,6 @@ struct Equation
     double x2;
 };
 
-
-enum Roots
-{
-    INFINITE_NUMBER = -1,
-    ZERO = 0,
-    ONE = 1,
-    TWO = 2
-};
 
 struct Equation program_samples[SAMPLES_AMOUNT] =
 {
@@ -42,6 +44,7 @@ struct Equation program_samples[SAMPLES_AMOUNT] =
     {1, 2, 1, ONE, -1, 0},
     {1.5, 2.5, -4, TWO, -((float)8)/3, 1}
 };
+
 
 int    LinearSolver             (double b, double c, double *x);
 
