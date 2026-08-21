@@ -8,13 +8,39 @@
 #define ACCURACY 10e-6
 #define POLYNOMIAL_DEGREE 2 // for quadratic equation
 #define SIZE 100
+#define SAMPLES_AMOUNT 10
 
-enum ROOTS
+struct Equation
+{
+    double a;
+    double b;
+    double c;
+    int total_roots;
+    double x1;
+    double x2;
+};
+
+
+enum Roots
 {
     INFINITE_NUMBER = -1,
     ZERO = 0,
     ONE = 1,
     TWO = 2
+};
+
+struct Equation program_samples[SAMPLES_AMOUNT] =
+{
+    {0, 0, 0, INFINITE_NUMBER, 0, 0},
+    {0, 0, 2, ZERO, 0, 0},
+    {0, -1, -1, ONE, -1, 0},
+    {0, 1, 2, ONE, -2, 0},
+    {1, 0, 0, ONE, 0, 0},
+    {1, 0, 2, ZERO, 0, 0},
+    {1, 0, -4, TWO, -2, 2},
+    {1, 2, 0, TWO, -2, 0},
+    {1, 2, 1, ONE, -1, 0},
+    {1.5, 2.5, -4, TWO, -((float)8)/3, 1}
 };
 
 int    LinearSolver             (double b, double c, double *x);
@@ -33,12 +59,28 @@ int    GetCoeffs                (double *a, double *b, double *c);
 
 bool   IsMore                   (double x1, double x2);
 
+bool   CheckTest                (struct Equation test);
+
+bool   CheckAllTests            (struct Equation *samples, int samples_amount);
+
+
 
 int main(void)
 {
     double a = 0.0, b = 0.0, c = 0.0;
     double x1 = 0.0, x2 = 0.0;
     int total_roots = 0;
+
+    if (!CheckAllTests(program_samples, SAMPLES_AMOUNT))
+    {
+        printf("Program failed pre-launch tests. Cannot execute this program\n");
+        return 0;
+    }
+
+    else
+    {
+        printf("Pre-launch tests completed successfully\n");
+    }
 
     printf("This program solves quadratic equation in the following format: ");
     printf("ax^2 + bx + c = 0\n");
@@ -230,5 +272,38 @@ int GetCoeff(double *coeff, int symb) // returns 1 if succeeded, 0 if failed
     return 1;
 }
 
+
+bool CheckTest(struct Equation sample)
+{
+    double check_x1 = 0.0, check_x2 = 0.0;
+    int total_roots = 0;
+
+    total_roots = QuadraticSolver(sample.a, sample.b, sample.c, &check_x1, &check_x2);
+
+    if (total_roots != sample.total_roots)
+        return false;
+
+    if (sample.total_roots == ZERO || sample.total_roots == INFINITE_NUMBER)
+        return true;
+
+    else if (sample.total_roots == ONE)
+        return FloatEqual(check_x1, sample.x1);
+
+    else
+        return FloatEqual(check_x1, sample.x1) && FloatEqual(check_x2, sample.x2);
+}
+
+bool CheckAllTests(struct Equation *samples, int samples_amount)
+{
+    for (int i = 0; i < samples_amount; i++)
+    {
+        if (!CheckTest(samples[i])) {
+            printf("%d\n", i);
+            return false;
+            }
+    }
+
+    return true;
+}
 
 
