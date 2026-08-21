@@ -19,30 +19,39 @@ enum Roots
     TWO = 2
 };
 
-struct Equation
+struct Coefficients
 {
     double a;
     double b;
     double c;
+};
 
+struct RootsInfo
+{
     int total_roots;
     double x1;
     double x2;
 };
 
+struct Equation
+{
+    struct Coefficients coeffs;
+    struct RootsInfo roots;
+};
+
 
 struct Equation program_samples[SAMPLES_AMOUNT] =
 {
-    {0,     0,  0,  INFINITE_NUMBER,      0, 0},
-    {0,     0,  2,             ZERO,      0, 0},
-    {0,    -1, -1,              ONE,     -1, 0},
-    {0,     1,  2,              ONE,     -2, 0},
-    {1,     0,  0,              ONE,      0, 0},
-    {1,     0,  2,             ZERO,      0, 0},
-    {1,     0, -4,              TWO,     -2, 2},
-    {1,     2,  0,              TWO,     -2, 0},
-    {1,     2,  1,              ONE,     -1, 0},
-    {1.5, 2.5, -4,              TWO, -8.0/3, 1}
+    { {0,     0,  0},  {INFINITE_NUMBER,      0, 0} },
+    { {0,     0,  2},  {           ZERO,      0, 0} },
+    { {0,    -1, -1},  {            ONE,     -1, 0} },
+    { {0,     1,  2},  {            ONE,     -2, 0} },
+    { {1,     0,  0},  {            ONE,      0, 0} },
+    { {1,     0,  2},  {           ZERO,      0, 0} },
+    { {1,     0, -4},  {            TWO,     -2, 2} },
+    { {1,     2,  0},  {            TWO,     -2, 0} },
+    { {1,     2,  1},  {            ONE,     -1, 0} },
+    { {1.5, 2.5, -4},  {            TWO, -8.0/3, 1} }
 };
 
 
@@ -203,6 +212,7 @@ int GetAllCoeffs(double *a, double *b, double *c)    // returns 1 if succeeded, 
     return 1;
 }
 
+
 int GetCoeff(double *coeff, int symb) // returns 1 if succeeded, 0 if failed
 {
     char input[SIZE] = {0};
@@ -275,19 +285,19 @@ bool RunTest(struct Equation sample)
     double check_x1 = 0.0, check_x2 = 0.0;
     int total_roots = 0;
 
-    total_roots = QuadraticSolver(sample.a, sample.b, sample.c, &check_x1, &check_x2);
+    total_roots = QuadraticSolver(sample.coeffs.a, sample.coeffs.b, sample.coeffs.c, &check_x1, &check_x2);
 
-    if (total_roots != sample.total_roots)
+    if (total_roots != sample.roots.total_roots)
         return false;
 
-    if (sample.total_roots == ZERO || sample.total_roots == INFINITE_NUMBER)
+    if (total_roots == ZERO || total_roots == INFINITE_NUMBER)
         return true;
 
-    else if (sample.total_roots == ONE)
-        return FloatEqual(check_x1, sample.x1);
+    else if (total_roots == ONE)
+        return FloatEqual(check_x1, sample.roots.x1);
 
     else
-        return FloatEqual(check_x1, sample.x1) && FloatEqual(check_x2, sample.x2);
+        return FloatEqual(check_x1, sample.roots.x1) && FloatEqual(check_x2, sample.roots.x2);
 }
 
 bool RunAllTests(struct Equation *samples, int samples_amount)
