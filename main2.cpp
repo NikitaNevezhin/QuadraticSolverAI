@@ -67,6 +67,8 @@ void   QuadraticSolverResults   (const int total_roots, const double x1, const d
 
 int    GetCoeff                 (double *coeff, int symb);
 
+bool   DotProcessing            (char input[], int *i, bool *seen_dot, int curr_ch);
+
 int    GetAllCoeffs             (double *a, double *b, double *c);
 
 bool   IsMore                   (const double x1, const double x2);
@@ -212,6 +214,21 @@ int GetAllCoeffs(double *a, double *b, double *c)    // returns 1 if succeeded, 
     return 1;
 }
 
+bool DotProcessing(char input[], int *i, bool *seen_dot, int curr_ch) // returns 1 if dot was processed succesfully, 0 if failed
+{
+    if (*seen_dot)
+    {
+        // printf("I was here when i = %d\n", *i);
+        printf("Invalid inpu\n");
+        return false;
+    }
+    // printf("I was here when i = %d\n", *i);
+    input[*i] = (char)curr_ch;
+    (*i)++;
+    *seen_dot = true;
+    return true;
+}
+
 
 int GetCoeff(double *coeff, int symb) // returns 1 if succeeded, 0 if failed
 {
@@ -230,11 +247,10 @@ int GetCoeff(double *coeff, int symb) // returns 1 if succeeded, 0 if failed
             i++;
         }
 
-        else if (!seen_dot && curr_ch == '.')
+        else if (curr_ch == '.')
         {
-            input[i] = (char)curr_ch;
-            i++;
-            seen_dot = true;
+            if (!DotProcessing(input, &i, &seen_dot, curr_ch))
+                return 0;
         }
 
         else if (curr_ch == '-')
