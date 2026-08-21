@@ -69,6 +69,8 @@ int    GetCoeff                 (double *coeff, int symb);
 
 bool   DotProcessing            (char input[], int *i, bool *seen_dot, int curr_ch);
 
+bool   MinusProcessing          (char input[], int *i, int curr_ch);
+
 int    GetAllCoeffs             (double *a, double *b, double *c);
 
 bool   IsMore                   (const double x1, const double x2);
@@ -214,18 +216,32 @@ int GetAllCoeffs(double *a, double *b, double *c)    // returns 1 if succeeded, 
     return 1;
 }
 
-bool DotProcessing(char input[], int *i, bool *seen_dot, int curr_ch) // returns 1 if dot was processed succesfully, 0 if failed
+bool DotProcessing(char input[], int *i, bool *seen_dot, int curr_ch) // returns true if dot was processed successfully, false if failed
 {
     if (*seen_dot)
     {
         // printf("I was here when i = %d\n", *i);
-        printf("Invalid inpu\n");
+        printf("Invalid input\n");
         return false;
     }
     // printf("I was here when i = %d\n", *i);
     input[*i] = (char)curr_ch;
     (*i)++;
     *seen_dot = true;
+    return true;
+}
+
+
+bool MinusProcessing(char input[], int *i, int curr_ch)   // returns true if minus was processed successfully, false if failed
+{
+    if (*i != 0)
+    {
+        printf("Invalid input\n");
+        return false;
+    }
+
+    input[*i] = (char)curr_ch;
+    (*i)++;
     return true;
 }
 
@@ -255,17 +271,8 @@ int GetCoeff(double *coeff, int symb) // returns 1 if succeeded, 0 if failed
 
         else if (curr_ch == '-')
         {
-            if (i == 0)
-            {
-                input[i] = (char)curr_ch;
-                i++;
-            }
-
-            else
-            {
-                printf("Invalid input\n");
+            if (!MinusProcessing(input, &i, curr_ch))
                 return 0;
-            }
         }
 
         else
