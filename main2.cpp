@@ -19,12 +19,12 @@ enum Roots
     TWO = 2
 };
 
-
 struct Equation
 {
     double a;
     double b;
     double c;
+
     int total_roots;
     double x1;
     double x2;
@@ -42,7 +42,7 @@ struct Equation program_samples[SAMPLES_AMOUNT] =
     {1, 0, -4, TWO, -2, 2},
     {1, 2, 0, TWO, -2, 0},
     {1, 2, 1, ONE, -1, 0},
-    {1.5, 2.5, -4, TWO, -((float)8)/3, 1}
+    {1.5, 2.5, -4, TWO, -8.0/3, 1}
 };
 
 
@@ -300,10 +300,11 @@ bool CheckAllTests(struct Equation *samples, int samples_amount)
 {
     for (int i = 0; i < samples_amount; i++)
     {
-        if (!CheckTest(samples[i])) {
-            printf("%d\n", i);
+        if (!CheckTest(samples[i]))
+        {
+            //printf("%d\n", i);
             return false;
-            }
+        }
     }
 
     return true;
