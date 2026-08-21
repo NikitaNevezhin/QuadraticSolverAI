@@ -71,7 +71,11 @@ bool   DotProcessing            (char input[], int *i, bool *seen_dot, int curr_
 
 bool   MinusProcessing          (char input[], int *i, int curr_ch);
 
-bool SymbolTaken(char input[], int *i, bool *seen_dot, int curr_ch);
+bool   SymbolTaken              (char input[], int *i, bool *seen_dot, int curr_ch);
+
+bool   IsEmpty                  (char input[]);
+
+bool   EndsWithDot              (char input[]);
 
 int    GetAllCoeffs             (double *a, double *b, double *c);
 
@@ -223,7 +227,6 @@ bool DotProcessing(char input[], int *i, bool *seen_dot, int curr_ch) // returns
     if (*seen_dot)
     {
         // printf("I was here when i = %d\n", *i);
-        printf("Invalid input\n");
         return false;
     }
     // printf("I was here when i = %d\n", *i);
@@ -238,7 +241,6 @@ bool MinusProcessing(char input[], int *i, int curr_ch)   // returns true if min
 {
     if (*i != 0)
     {
-        printf("Invalid input\n");
         return false;
     }
 
@@ -268,6 +270,22 @@ bool SymbolTaken(char input[], int *i, bool *seen_dot, int curr_ch)  // returns 
 }
 
 
+bool IsEmpty(char input[])
+{
+    return input[0] == '\0';
+}
+
+
+bool EndsWithDot(char input[])
+{
+    int length = strlen(input);
+
+    if (IsEmpty(input)) return false;
+
+    return input[length - 1] == '.';
+}
+
+
 
 int GetCoeff(double *coeff, int symb) // returns 1 if succeeded, 0 if failed
 {
@@ -284,23 +302,18 @@ int GetCoeff(double *coeff, int symb) // returns 1 if succeeded, 0 if failed
             continue;
         else
         {
+            printf("Invalid input\n");
             return 0;
         }
     }
 
-    if (i == 0)
-    {
-        printf("Invalid input\n");
-        return 0;
-    }
-
-    if (input[i - 1] == '.')
-    {
-        printf("Invalid input\n");
-        return 0;
-    }
-
     input[i] = '\0';
+
+    if (IsEmpty(input) || EndsWithDot(input))
+    {
+        printf("Invalid input\n");
+        return 0;
+    }
 
     *coeff = atof(input);
 
