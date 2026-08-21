@@ -33,38 +33,38 @@ struct Equation
 
 struct Equation program_samples[SAMPLES_AMOUNT] =
 {
-    {0, 0, 0, INFINITE_NUMBER, 0, 0},
-    {0, 0, 2, ZERO, 0, 0},
-    {0, -1, -1, ONE, -1, 0},
-    {0, 1, 2, ONE, -2, 0},
-    {1, 0, 0, ONE, 0, 0},
-    {1, 0, 2, ZERO, 0, 0},
-    {1, 0, -4, TWO, -2, 2},
-    {1, 2, 0, TWO, -2, 0},
-    {1, 2, 1, ONE, -1, 0},
-    {1.5, 2.5, -4, TWO, -8.0/3, 1}
+    {0,     0,  0,  INFINITE_NUMBER,      0, 0},
+    {0,     0,  2,             ZERO,      0, 0},
+    {0,    -1, -1,              ONE,     -1, 0},
+    {0,     1,  2,              ONE,     -2, 0},
+    {1,     0,  0,              ONE,      0, 0},
+    {1,     0,  2,             ZERO,      0, 0},
+    {1,     0, -4,              TWO,     -2, 2},
+    {1,     2,  0,              TWO,     -2, 0},
+    {1,     2,  1,              ONE,     -1, 0},
+    {1.5, 2.5, -4,              TWO, -8.0/3, 1}
 };
 
 
-int    LinearSolver             (double b, double c, double *x);
+int    LinearSolver             (const double b, const double c, double *x);
 
-int    QuadraticSolver          (double a, double b, double c, double *x1, double *x2);
+int    QuadraticSolver          (const double a, const double b, const double c, double *x1, double *x2);
 
-bool   FloatEqual               (double x, double y);
+bool   FloatEqual               (const double x, const double y);
 
-double CalcDiscriminant         (double a, double b, double c);
+double CalcDiscriminant         (const double a, const double b, const double c);
 
-void   QuadraticSolverResults   (int total_roots, double x1, double x2);
+void   QuadraticSolverResults   (const int total_roots, const double x1, const double x2);
 
 int    GetCoeff                 (double *coeff, int symb);
 
-int    GetCoeffs                (double *a, double *b, double *c);
+int    GetAllCoeffs             (double *a, double *b, double *c);
 
-bool   IsMore                   (double x1, double x2);
+bool   IsMore                   (const double x1, const double x2);
 
-bool   CheckTest                (struct Equation test);
+bool   RunTest                  (struct Equation test);
 
-bool   CheckAllTests            (struct Equation *samples, int samples_amount);
+bool   RunAllTests              (struct Equation *samples, int samples_amount);
 
 
 
@@ -74,21 +74,14 @@ int main(void)
     double x1 = 0.0, x2 = 0.0;
     int total_roots = 0;
 
-    if (!CheckAllTests(program_samples, SAMPLES_AMOUNT))
-    {
-        printf("Program failed pre-launch tests. Cannot execute this program\n");
+    if (!RunAllTests(program_samples, SAMPLES_AMOUNT))
         return 0;
-    }
 
-    else
-    {
-        printf("Pre-launch tests completed successfully\n");
-    }
 
     printf("This program solves quadratic equation in the following format: ");
     printf("ax^2 + bx + c = 0\n");
 
-    if (!GetCoeffs(&a, &b, &c))
+    if (!GetAllCoeffs(&a, &b, &c))
     {
         printf("Program failed\n");
         return 0;
@@ -101,7 +94,7 @@ int main(void)
     return 0;
 }
 
-int LinearSolver(double b, double c, double *x)
+int LinearSolver(const double b, const double c, double *x)
 {
     if (FloatEqual(b, 0.0))
     {
@@ -122,9 +115,9 @@ int LinearSolver(double b, double c, double *x)
 }
 
 
-int QuadraticSolver(double a, double b, double c, double *x1, double *x2)
+int QuadraticSolver(const double a, const double b, const double c, double *x1, double *x2)
 {
-    double disc = 0.0;
+    double disc = 0.0, sq_disc = 0.0;
 
     if (FloatEqual(a, 0.0))
     {
@@ -137,8 +130,9 @@ int QuadraticSolver(double a, double b, double c, double *x1, double *x2)
 
     else
     {
-        *x1 = (-b - sqrt(disc)) / (2 * a);
-        *x2 = (-b + sqrt(disc)) / (2 * a);
+        sq_disc = sqrt(disc);
+        *x1 = (-b - sq_disc) / (2 * a);
+        *x2 = (-b + sq_disc) / (2 * a);
 
         if (FloatEqual(disc, 0.0))
             return ONE;
@@ -149,25 +143,25 @@ int QuadraticSolver(double a, double b, double c, double *x1, double *x2)
 }
 
 
-bool FloatEqual(double x, double y)
+bool FloatEqual(const double x, const double y)
 {
     return fabs(x - y) < ACCURACY;
 }
 
 
-bool IsMore(double x1, double x2)
+bool IsMore(const double x1, const double x2)
 {
     return (x1 - x2) > ACCURACY;
 }
 
 
-double CalcDiscriminant(double a, double b, double c)
+double CalcDiscriminant(const double a, const double b, const double c)
 {
     return pow(b, 2) - 4 * a * c;
 }
 
 
-void QuadraticSolverResults(int total_roots, double x1, double x2)
+void QuadraticSolverResults(const int total_roots, const double x1, const double x2)
 {
     switch (total_roots)
     {
@@ -194,10 +188,10 @@ void QuadraticSolverResults(int total_roots, double x1, double x2)
 }
 
 
-int GetCoeffs(double *a, double *b, double *c)    // returns 1 if succeeded, 0 if failed
+int GetAllCoeffs(double *a, double *b, double *c)    // returns 1 if succeeded, 0 if failed
 {
     int i = 0;
-    double *coeffs[POLYNOMIAL_DEGREE + 1] = {a, b, c};  // POLYNOMIAL_DEGREE + 1 = amount of members of polynomial
+    double* coeffs[POLYNOMIAL_DEGREE + 1] = {a, b, c};  // POLYNOMIAL_DEGREE + 1 = amount of members of polynomial
     int coeff_letter = 'a';
 
     for (; i <= POLYNOMIAL_DEGREE; i++)
@@ -276,7 +270,7 @@ int GetCoeff(double *coeff, int symb) // returns 1 if succeeded, 0 if failed
 }
 
 
-bool CheckTest(struct Equation sample)
+bool RunTest(struct Equation sample)
 {
     double check_x1 = 0.0, check_x2 = 0.0;
     int total_roots = 0;
@@ -296,17 +290,18 @@ bool CheckTest(struct Equation sample)
         return FloatEqual(check_x1, sample.x1) && FloatEqual(check_x2, sample.x2);
 }
 
-bool CheckAllTests(struct Equation *samples, int samples_amount)
+bool RunAllTests(struct Equation *samples, int samples_amount)
 {
     for (int i = 0; i < samples_amount; i++)
     {
-        if (!CheckTest(samples[i]))
+        if (!RunTest(samples[i]))
         {
-            //printf("%d\n", i);
+            printf("Program failed pre-launch tests. Cannot execute this program\n");
             return false;
         }
     }
 
+    printf("Pre-launch tests completed successfully\n");
     return true;
 }
 
