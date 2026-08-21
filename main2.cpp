@@ -1,3 +1,4 @@
+#include <TXLib.h>
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
@@ -8,26 +9,36 @@
 #define POLYNOMIAL_DEGREE 2 // for quadratic equation
 #define SIZE 100
 
-enum solutions {
-    INFINITE_SOLUTIONS = -1,
-    NO_SOLUTIONS = 0,
-    ONE_SOLUTION = 1,
-    TWO_SOLUTIONS = 2
+enum ROOTS
+{
+    INFINITE_NUMBER = -1,
+    ZERO = 0,
+    ONE = 1,
+    TWO = 2
 };
 
-int LinearSolver(double b, double c, double *x);
-int QuadraticSolver(double a, double b, double c, double *x1, double *x2);
-bool FloatEqual(double x, double y);
-double CalcDiscriminant(double a, double b, double c);
-void QuadraticSolverResults(int total_solutions, double x1, double x2);
-int GetCoeff(double *coeff, int symb);
-int GetCoeffs(double *a, double *b, double *c);
+int    LinearSolver             (double b, double c, double *x);
+
+int    QuadraticSolver          (double a, double b, double c, double *x1, double *x2);
+
+bool   FloatEqual               (double x, double y);
+
+double CalcDiscriminant         (double a, double b, double c);
+
+void   QuadraticSolverResults   (int total_roots, double x1, double x2);
+
+int    GetCoeff                 (double *coeff, int symb);
+
+int    GetCoeffs                (double *a, double *b, double *c);
+
+bool   IsMore                   (double x1, double x2);
+
 
 int main(void)
 {
     double a = 0.0, b = 0.0, c = 0.0;
     double x1 = 0.0, x2 = 0.0;
-    int total_solutions = 0;
+    int total_roots = 0;
 
     printf("This program solves quadratic equation in the following format: ");
     printf("ax^2 + bx + c = 0\n");
@@ -38,9 +49,9 @@ int main(void)
         return 0;
     }
 
-    total_solutions = QuadraticSolver(a, b, c, &x1, &x2);
+    total_roots = QuadraticSolver(a, b, c, &x1, &x2);
 
-    QuadraticSolverResults(total_solutions, x1, x2);
+    QuadraticSolverResults(total_roots, x1, x2);
 
     return 0;
 }
@@ -50,19 +61,19 @@ int LinearSolver(double b, double c, double *x)
     if (FloatEqual(b, 0.0))
     {
         if (FloatEqual(c, 0.0))
-            return -1; // infinite number of solutions
+            return INFINITE_NUMBER; // infinite number of solutions
         else
-            return 0; // no solutions
+            return ZERO; // no solutions
     }
 
     else if (FloatEqual(c, 0.0) )
     {
         *x = 0.0;
-        return 1;
+        return ONE;
     }
 
     *x = -(c / b);
-    return 1; // one solution
+    return ONE; // one solution
 }
 
 
@@ -77,18 +88,18 @@ int QuadraticSolver(double a, double b, double c, double *x1, double *x2)
 
     disc = CalcDiscriminant(a, b, c);
 
-    if (disc < 0)  {
-        return 0;
-      }
+    if (disc < 0) return ZERO;
+
     else
     {
         *x1 = (-b - sqrt(disc)) / (2 * a);
-        *x2 = (- b + sqrt(disc)) / (2 * a);
+        *x2 = (-b + sqrt(disc)) / (2 * a);
 
         if (FloatEqual(disc, 0.0))
-            return 1;
+            return ONE;
+
         else
-            return 2;
+            return TWO;
     }
 }
 
@@ -99,30 +110,41 @@ bool FloatEqual(double x, double y)
 }
 
 
+bool IsMore(double x1, double x2)
+{
+    return (x1 - x2) > ACCURACY;
+}
+
+
 double CalcDiscriminant(double a, double b, double c)
 {
     return pow(b, 2) - 4 * a * c;
 }
 
 
-void QuadraticSolverResults(int total_solutions, double x1, double x2)
+void QuadraticSolverResults(int total_roots, double x1, double x2)
 {
-    switch (total_solutions)
+    switch (total_roots)
     {
-        case NO_SOLUTIONS:
+        case ZERO:
             printf("There are no real solutions\n");
             break;
-        case ONE_SOLUTION:
+
+        case ONE:
             printf("There is a single solution: %lf\n", x1);
             break;
-        case TWO_SOLUTIONS:
+
+        case TWO:
             printf("There are two solutions: %lf and %lf\n", x1, x2);
             break;
-        case INFINITE_SOLUTIONS:
+
+        case INFINITE_NUMBER:
             printf("There is an infinite number of solutions\n");
             break;
+
         default:
             printf("Some error occured in function QuadraticSolver :( \n");
+            break;
     }
 }
 
@@ -130,7 +152,7 @@ void QuadraticSolverResults(int total_solutions, double x1, double x2)
 int GetCoeffs(double *a, double *b, double *c)    // returns 1 if succeeded, 0 if failed
 {
     int i = 0;
-    double *coeffs[POLYNOMIAL_DEGREE + 1] = {a, b, c};  //POLYNOMIAL_DEGREE + 1 = amount of members of polynomial
+    double *coeffs[POLYNOMIAL_DEGREE + 1] = {a, b, c};  // POLYNOMIAL_DEGREE + 1 = amount of members of polynomial
     int coeff_letter = 'a';
 
     for (; i <= POLYNOMIAL_DEGREE; i++)
