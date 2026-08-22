@@ -46,15 +46,15 @@ void   GreetUser                (void);
 
 void   ProgramFailed            (void);
 
-void   SolveLinear             (struct Coefficients *input_coeffs, struct RootsInfo *result_roots);
+void   SolveLinear              (struct Equation *equation_info);
 
-void   SolveQuadratic          (struct Coefficients *input_coeffs, struct RootsInfo *result_roots);
+void   SolveQuadratic           (struct Equation *equation_info);
 
 bool   FloatEqual               (const double x, const double y);
 
 double CalcDiscriminant         (struct Coefficients *input_coeffs);
 
-void   ShowProgramResults   (struct RootsInfo *result_roots);
+void   ShowProgramResults       (struct RootsInfo *result_roots);
 
 int    GetCoeff                 (double *coeff, int symb);
 
@@ -80,23 +80,26 @@ bool   RunAllTests              (void);
 
 int main(void)
 {
-    struct Coefficients input_coeffs = {0.0, 0.0, 0.0};
-    struct RootsInfo result_roots = {0, 0.0, 0.0};
+    struct Equation equation_info =
+    {
+        {0.0, 0.0, 0.0},
+        {0, 0.0, 0.0}
+    };
 
     if (!RunAllTests())
         return 0;
 
     GreetUser();
 
-    if (!GetAllCoeffs(&input_coeffs))
+    if (!GetAllCoeffs(&equation_info.coeffs))
     {
         ProgramFailed();
         return 0;
     }
 
-    SolveQuadratic(&input_coeffs, &result_roots);
+    SolveQuadratic(&equation_info);
 
-    ShowProgramResults(&result_roots);
+    ShowProgramResults(&equation_info.roots);
 
     return 0;
 }
@@ -115,65 +118,68 @@ void ProgramFailed(void)
 
 
 
-void SolveLinear(struct Coefficients *input_coeffs, struct RootsInfo *result_roots)
+void SolveLinear(struct Equation *equation_info)
 {
-    assert(input_coeffs != NULL && result_roots != NULL);
+    assert(equation_info != NULL);
 
-    if (FloatEqual(input_coeffs->b, 0.0))
+    if (FloatEqual(equation_info->coeffs.b, 0.0))
     {
-        if (FloatEqual(input_coeffs->c, 0.0))
+        if (FloatEqual(equation_info->coeffs.c, 0.0))
         {
-            result_roots->total_roots = INFINITE_NUMBER;
+            equation_info->roots.total_roots = INFINITE_NUMBER;
             return;
         }
         else
         {
-            result_roots->total_roots = ZERO;
+            equation_info->roots.total_roots = ZERO;
             return;
         }
     }
 
-    else if (FloatEqual(input_coeffs->c, 0.0))
+    else if (FloatEqual(equation_info->coeffs.c, 0.0))
     {
-        result_roots->x1 = 0.0;
-        result_roots->total_roots = ONE;
+        equation_info->roots.x1 = 0.0;
+        equation_info->roots.total_roots = ONE;
         return;
     }
 
-    result_roots->x1 = -(input_coeffs->c / input_coeffs->b);
-    result_roots->total_roots = ONE;
+    equation_info->roots.x1 = -(equation_info->coeffs.c / equation_info->coeffs.b);
+    equation_info->roots.total_roots = ONE;
     return;
 }
 
 
-void SolveQuadratic(struct Coefficients *input_coeffs, struct RootsInfo *result_roots)
+void SolveQuadratic(struct Equation *equation_info)
 {
+    assert(equation_info != NULL);
+
     double disc = 0.0, sq_disc = 0.0;
 
-    if (FloatEqual(input_coeffs->a, 0.0))
+    if (FloatEqual(equation_info->coeffs.a, 0.0))
     {
         // input_coeffs = NULL;  //  ост€н был здесь и добавил прикольную фичу
-        SolveLinear(input_coeffs, result_roots);
+        // equation_info = NULL;
+        SolveLinear(equation_info);
         return;
     }
 
-    disc = CalcDiscriminant(input_coeffs);
+    disc = CalcDiscriminant(&(equation_info->coeffs));
 
     if (disc < 0)
-        result_roots->total_roots = ZERO;
+        equation_info->roots.total_roots = ZERO;
 
     else
     {
         sq_disc = sqrt(disc);
 
-        result_roots->x1 = (-input_coeffs->b - sq_disc) / (2 * input_coeffs->a);
-        result_roots->x2 = (-input_coeffs->b + sq_disc) / (2 * input_coeffs->a);
+        equation_info->roots.x1 = (-equation_info->coeffs.b - sq_disc) / (2 * equation_info->coeffs.a);
+        equation_info->roots.x2 = (-equation_info->coeffs.b + sq_disc) / (2 * equation_info->coeffs.a);
 
         if (FloatEqual(disc, 0.0))
-            result_roots->total_roots = ONE;
+            equation_info->roots.total_roots = ONE;
 
         else
-            result_roots->total_roots = TWO;
+            equation_info->roots.total_roots = TWO;
     }
 }
 
@@ -192,12 +198,16 @@ bool IsMore(const double x1, const double x2)
 
 double CalcDiscriminant(struct Coefficients *input_coeffs)
 {
+    assert(input_coeffs != NULL);
+
     return pow(input_coeffs->b, 2) - 4 * input_coeffs->a * input_coeffs->c;
 }
 
 
 void ShowProgramResults(struct RootsInfo *result_roots)
 {
+    assert(result_roots != NULL);
+
     switch (result_roots->total_roots)
     {
         case ZERO:
@@ -225,6 +235,8 @@ void ShowProgramResults(struct RootsInfo *result_roots)
 
 int GetAllCoeffs(struct Coefficients *input_coeffs)    // returns 1 if succeeded, 0 if failed
 {
+    assert(input_coeffs != NULL);
+
     int i = 0;
     double coeffs[POLYNOMIAL_DEGREE + 1] = {};  // POLYNOMIAL_DEGREE + 1 = amount of members of polynomial
     int coeff_letter = 'a';
@@ -345,21 +357,23 @@ int GetCoeff(double *coeff, int symb) // returns 1 if succeeded, 0 if failed
 
 bool RunTest(struct Equation *sample)
 {
-    struct RootsInfo result_roots = {0, 0.0, 0.0};
+    assert(sample != NULL);
 
-    SolveQuadratic(&(sample->coeffs), &result_roots);
+    struct Equation result_info = {sample->coeffs, {0, 0.0, 0.0}};
 
-    if (result_roots.total_roots != sample->roots.total_roots)
+    SolveQuadratic(&result_info);
+
+    if (result_info.roots.total_roots != sample->roots.total_roots)
         return false;
 
-    if (result_roots.total_roots == ZERO || result_roots.total_roots == INFINITE_NUMBER)
+    if (result_info.roots.total_roots == ZERO || result_info.roots.total_roots == INFINITE_NUMBER)
         return true;
 
-    else if (result_roots.total_roots == ONE)
-        return FloatEqual(result_roots.x1, sample->roots.x1);
+    else if (result_info.roots.total_roots == ONE)
+        return FloatEqual(result_info.roots.x1, sample->roots.x1);
 
     else
-        return FloatEqual(result_roots.x1, sample->roots.x1) && FloatEqual(result_roots.x2, sample->roots.x2);
+        return FloatEqual(result_info.roots.x1, sample->roots.x1) && FloatEqual(result_info.roots.x2, sample->roots.x2);
 }
 
 bool RunAllTests()
