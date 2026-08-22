@@ -40,21 +40,6 @@ struct Equation
 };
 
 
-struct Equation program_samples[SAMPLES_AMOUNT] =
-{
-    { {0,     0,  0},  {INFINITE_NUMBER,      NAN, NAN} },
-    { {0,     0,  2},  {           ZERO,      NAN, NAN} },
-    { {0,    -1, -1},  {            ONE,       -1, NAN} },
-    { {0,     1,  2},  {            ONE,       -2, NAN} },
-    { {1,     0,  0},  {            ONE,        0, NAN} },
-    { {1,     0,  2},  {           ZERO,      NAN, NAN} },
-    { {1,     0, -4},  {            TWO,       -2,   2} },
-    { {1,     2,  0},  {            TWO,       -2,   0} },
-    { {1,     2,  1},  {            ONE,       -1, NAN} },
-    { {1.5, 2.5, -4},  {            TWO,   -8.0/3,   1} }
-};
-
-
 int    LinearSolver             (const double b, const double c, double *x);
 
 int    QuadraticSolver          (const double a, const double b, const double c, double *x1, double *x2);
@@ -83,7 +68,7 @@ bool   IsMore                   (const double x1, const double x2);
 
 bool   RunTest                  (struct Equation *test);
 
-bool   RunAllTests              (struct Equation *samples, int samples_amount);
+bool   RunAllTests              (void);
 
 
 
@@ -93,7 +78,7 @@ int main(void)
     double x1 = 0.0, x2 = 0.0;
     int total_roots = 0;
 
-    if (!RunAllTests(program_samples, SAMPLES_AMOUNT))
+    if (!RunAllTests())
         return 0;
 
 
@@ -343,11 +328,25 @@ bool RunTest(struct Equation *sample)
         return FloatEqual(check_x1, sample->roots.x1) && FloatEqual(check_x2, sample->roots.x2);
 }
 
-bool RunAllTests(struct Equation *samples, int samples_amount)
+bool RunAllTests()
 {
-    for (int i = 0; i < samples_amount; i++)
+    struct Equation program_samples[SAMPLES_AMOUNT] =
     {
-        if (!RunTest(&samples[i]))
+        { {0,     0,  0},  {INFINITE_NUMBER,      NAN, NAN} },
+        { {0,     0,  2},  {           ZERO,      NAN, NAN} },
+        { {0,    -1, -1},  {            ONE,       -1, NAN} },
+        { {0,     1,  2},  {            ONE,       -2, NAN} },
+        { {1,     0,  0},  {            ONE,        0, NAN} },
+        { {1,     0,  2},  {           ZERO,      NAN, NAN} },
+        { {1,     0, -4},  {            TWO,       -2,   2} },
+        { {1,     2,  0},  {            TWO,       -2,   0} },
+        { {1,     2,  1},  {            ONE,       -1, NAN} },
+        { {1.5, 2.5, -4},  {            TWO,   -8.0/3,   1} }
+    };
+
+    for (int i = 0; i < SAMPLES_AMOUNT; i++)
+    {
+        if (!RunTest(&program_samples[i]))
         {
             printf("Program failed pre-launch tests. Cannot execute this program\n");
             return false;
