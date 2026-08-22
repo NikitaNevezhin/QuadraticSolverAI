@@ -1,9 +1,11 @@
-#include <TXLib.h>
+
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
+#include <assert.h>
 
 #define ACCURACY 10e-6
 #define POLYNOMIAL_DEGREE 2 // for quadratic equation
@@ -44,15 +46,15 @@ void   GreetUser                (void);
 
 void   ProgramFailed            (void);
 
-void   LinearSolver             (struct Coefficients *input_coeffs, struct RootsInfo *result_roots);
+void   SolveLinear             (struct Coefficients *input_coeffs, struct RootsInfo *result_roots);
 
-void   QuadraticSolver          (struct Coefficients *input_coeffs, struct RootsInfo *result_roots);
+void   SolveQuadratic          (struct Coefficients *input_coeffs, struct RootsInfo *result_roots);
 
 bool   FloatEqual               (const double x, const double y);
 
 double CalcDiscriminant         (struct Coefficients *input_coeffs);
 
-void   QuadraticSolverResults   (struct RootsInfo *result_roots);
+void   ShowProgramResults   (struct RootsInfo *result_roots);
 
 int    GetCoeff                 (double *coeff, int symb);
 
@@ -92,9 +94,9 @@ int main(void)
         return 0;
     }
 
-    QuadraticSolver(&input_coeffs, &result_roots);
+    SolveQuadratic(&input_coeffs, &result_roots);
 
-    QuadraticSolverResults(&result_roots);
+    ShowProgramResults(&result_roots);
 
     return 0;
 }
@@ -102,8 +104,8 @@ int main(void)
 
 void GreetUser(void)
 {
-    printf("This program solves quadratic equation in the following format: ");
-    printf("ax^2 + bx + c = 0\n");
+    printf("This program solves quadratic equation in the following format: "
+           "ax^2 + bx + c = 0\n");
 }
 
 void ProgramFailed(void)
@@ -113,8 +115,10 @@ void ProgramFailed(void)
 
 
 
-void LinearSolver(struct Coefficients *input_coeffs, struct RootsInfo *result_roots)
+void SolveLinear(struct Coefficients *input_coeffs, struct RootsInfo *result_roots)
 {
+    assert(input_coeffs != NULL && result_roots != NULL);
+
     if (FloatEqual(input_coeffs->b, 0.0))
     {
         if (FloatEqual(input_coeffs->c, 0.0))
@@ -129,7 +133,7 @@ void LinearSolver(struct Coefficients *input_coeffs, struct RootsInfo *result_ro
         }
     }
 
-    else if (FloatEqual(input_coeffs->c, 0.0) )
+    else if (FloatEqual(input_coeffs->c, 0.0))
     {
         result_roots->x1 = 0.0;
         result_roots->total_roots = ONE;
@@ -142,13 +146,14 @@ void LinearSolver(struct Coefficients *input_coeffs, struct RootsInfo *result_ro
 }
 
 
-void QuadraticSolver(struct Coefficients *input_coeffs, struct RootsInfo *result_roots)
+void SolveQuadratic(struct Coefficients *input_coeffs, struct RootsInfo *result_roots)
 {
     double disc = 0.0, sq_disc = 0.0;
 
     if (FloatEqual(input_coeffs->a, 0.0))
     {
-        LinearSolver(input_coeffs, result_roots);
+        // input_coeffs = NULL;  //  ост€н был здесь и добавил прикольную фичу
+        SolveLinear(input_coeffs, result_roots);
         return;
     }
 
@@ -191,7 +196,7 @@ double CalcDiscriminant(struct Coefficients *input_coeffs)
 }
 
 
-void QuadraticSolverResults(struct RootsInfo *result_roots)
+void ShowProgramResults(struct RootsInfo *result_roots)
 {
     switch (result_roots->total_roots)
     {
@@ -212,7 +217,7 @@ void QuadraticSolverResults(struct RootsInfo *result_roots)
             break;
 
         default:
-            printf("Some error occured in function QuadraticSolver :( \n");
+            printf("Some error occured in function SolveQuadratic :( \n");
             break;
     }
 }
@@ -342,7 +347,7 @@ bool RunTest(struct Equation *sample)
 {
     struct RootsInfo result_roots = {0, 0.0, 0.0};
 
-    QuadraticSolver(&(sample->coeffs), &result_roots);
+    SolveQuadratic(&(sample->coeffs), &result_roots);
 
     if (result_roots.total_roots != sample->roots.total_roots)
         return false;
