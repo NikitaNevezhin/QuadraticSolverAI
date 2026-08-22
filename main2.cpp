@@ -71,7 +71,7 @@ bool   DotProcessing            (char input[], int *i, bool *seen_dot, int curr_
 
 bool   MinusProcessing          (char input[], int *i, int curr_ch);
 
-bool   SymbolTaken              (char input[], int *i, bool *seen_dot, int curr_ch);
+bool   IsSymbolTaken            (char input[], int *i, bool *seen_dot, int curr_ch);
 
 bool   IsEmpty                  (char input[]);
 
@@ -250,7 +250,7 @@ bool MinusProcessing(char input[], int *i, int curr_ch)   // returns true if min
 }
 
 
-bool SymbolTaken(char input[], int *i, bool *seen_dot, int curr_ch)  // returns true if symbol was taken, false if failed
+bool IsSymbolTaken(char input[], int *i, bool *seen_dot, int curr_ch)  // returns true if symbol was taken, false if failed
 {
     if (isdigit(curr_ch) || curr_ch == '.' || curr_ch == '-')
     {
@@ -260,8 +260,10 @@ bool SymbolTaken(char input[], int *i, bool *seen_dot, int curr_ch)  // returns 
             (*i)++;
             return true;
         }
+
         else if (curr_ch == '.')
             return DotProcessing(input, i, seen_dot, curr_ch);
+
         else
             return MinusProcessing(input, i, curr_ch);
     }
@@ -286,10 +288,9 @@ bool EndsWithDot(char input[])
 }
 
 
-
 int GetCoeff(double *coeff, int symb) // returns 1 if succeeded, 0 if failed
 {
-    char input[SIZE] = {0};
+    char input[SIZE] = {};
     int curr_ch = 0;
     int i = 0;
     bool seen_dot = false;
@@ -298,8 +299,9 @@ int GetCoeff(double *coeff, int symb) // returns 1 if succeeded, 0 if failed
 
     while ( (curr_ch = getchar()) != '\n')
     {
-        if (SymbolTaken(input, &i, &seen_dot, curr_ch))
+        if (IsSymbolTaken(input, &i, &seen_dot, curr_ch))
             continue;
+
         else
         {
             printf("Invalid input\n");
