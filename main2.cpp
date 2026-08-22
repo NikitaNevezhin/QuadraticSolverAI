@@ -40,13 +40,15 @@ struct Equation
 };
 
 
-int    LinearSolver             (const double b, const double c, double *x);
+void   GreetUser                (void);
 
-int    QuadraticSolver          (const double a, const double b, const double c, double *x1, double *x2);
+int    LinearSolver             (struct Coefficients *input_coeffs, double *x);
+
+int    QuadraticSolver          (struct Coefficients *input_coeffs, double *x1, double *x2);
 
 bool   FloatEqual               (const double x, const double y);
 
-double CalcDiscriminant         (const double a, const double b, const double c);
+double CalcDiscriminant         (struct Coefficients *input_coeffs);
 
 void   QuadraticSolverResults   (const int total_roots, const double x1, const double x2);
 
@@ -62,7 +64,7 @@ bool   IsEmpty                  (char input[]);
 
 bool   EndsWithDot              (char input[]);
 
-int    GetAllCoeffs             (double *a, double *b, double *c);
+int    GetAllCoeffs             (struct Coefficients *input_coeffs);
 
 bool   IsMore                   (const double x1, const double x2);
 
@@ -74,69 +76,75 @@ bool   RunAllTests              (void);
 
 int main(void)
 {
-    double a = 0.0, b = 0.0, c = 0.0;
+    struct Coefficients input_coeffs = {0.0, 0.0, 0.0};
     double x1 = 0.0, x2 = 0.0;
     int total_roots = 0;
 
     if (!RunAllTests())
         return 0;
 
+    GreetUser();
 
-    printf("This program solves quadratic equation in the following format: ");
-    printf("ax^2 + bx + c = 0\n");
-
-    if (!GetAllCoeffs(&a, &b, &c))
+    if (!GetAllCoeffs(&input_coeffs))
     {
         printf("Program failed\n");
         return 0;
     }
 
-    total_roots = QuadraticSolver(a, b, c, &x1, &x2);
+    total_roots = QuadraticSolver(&input_coeffs, &x1, &x2);
 
     QuadraticSolverResults(total_roots, x1, x2);
 
     return 0;
 }
 
-int LinearSolver(const double b, const double c, double *x)
+
+void GreetUser(void)
 {
-    if (FloatEqual(b, 0.0))
+    printf("This program solves quadratic equation in the following format: ");
+    printf("ax^2 + bx + c = 0\n");
+}
+
+
+int LinearSolver(struct Coefficients *input_coeffs, double *x)
+{
+    if (FloatEqual(input_coeffs->b, 0.0))
     {
-        if (FloatEqual(c, 0.0))
+        if (FloatEqual(input_coeffs->c, 0.0))
             return INFINITE_NUMBER; // infinite number of solutions
         else
             return ZERO; // no solutions
     }
 
-    else if (FloatEqual(c, 0.0) )
+    else if (FloatEqual(input_coeffs->c, 0.0) )
     {
         *x = 0.0;
         return ONE;
     }
 
-    *x = -(c / b);
+    *x = -(input_coeffs->c / input_coeffs->b);
     return ONE; // one solution
 }
 
 
-int QuadraticSolver(const double a, const double b, const double c, double *x1, double *x2)
+int QuadraticSolver(struct Coefficients *input_coeffs, double *x1, double *x2)
 {
     double disc = 0.0, sq_disc = 0.0;
 
-    if (FloatEqual(a, 0.0))
+    if (FloatEqual(input_coeffs->a, 0.0))
     {
-        return LinearSolver(b, c, x1);
+        return LinearSolver(input_coeffs, x1);
     }
 
-    disc = CalcDiscriminant(a, b, c);
+    disc = CalcDiscriminant(input_coeffs);
 
     if (disc < 0) return ZERO;
 
     else
     {
         sq_disc = sqrt(disc);
-        *x1 = (-b - sq_disc) / (2 * a);
-        *x2 = (-b + sq_disc) / (2 * a);
+        *x1 = (-input_coeffs->b - sq_disc) / (2 * input_coeffs->a);
+        *x2 = (-input_coeffs->b + sq_disc) / (2 * input_coeffs->a);
 
         if (FloatEqual(disc, 0.0))
             return ONE;
@@ -159,9 +167,9 @@ bool IsMore(const double x1, const double x2)
 }
 
 
-double CalcDiscriminant(const double a, const double b, const double c)
+double CalcDiscriminant(struct Coefficients *input_coeffs)
 {
-    return pow(b, 2) - 4 * a * c;
+    return pow(input_coeffs->b, 2) - 4 * input_coeffs->a * input_coeffs->c;
 }
 
 
@@ -192,17 +200,21 @@ void QuadraticSolverResults(const int total_roots, const double x1, const double
 }
 
 
-int GetAllCoeffs(double *a, double *b, double *c)    // returns 1 if succeeded, 0 if failed
+int GetAllCoeffs(struct Coefficients *input_coeffs)    // returns 1 if succeeded, 0 if failed
 {
     int i = 0;
-    double* coeffs[POLYNOMIAL_DEGREE + 1] = {a, b, c};  // POLYNOMIAL_DEGREE + 1 = amount of members of polynomial
+    double coeffs[POLYNOMIAL_DEGREE + 1] = {};  // POLYNOMIAL_DEGREE + 1 = amount of members of polynomial
     int coeff_letter = 'a';
 
     for (; i <= POLYNOMIAL_DEGREE; i++)
     {
-        if (!GetCoeff(coeffs[i], coeff_letter + i))
+        if (!GetCoeff(&coeffs[i], coeff_letter + i))
             return 0;
     }
+
+    input_coeffs->a = coeffs[0];
+    input_coeffs->b = coeffs[1];
+    input_coeffs->c = coeffs[2];
 
     return 1;
 }
@@ -313,7 +325,7 @@ bool RunTest(struct Equation *sample)
     double check_x1 = 0.0, check_x2 = 0.0;
     int total_roots = 0;
 
-    total_roots = QuadraticSolver(sample->coeffs.a, sample->coeffs.b, sample->coeffs.c, &check_x1, &check_x2);
+    total_roots = QuadraticSolver(&(sample->coeffs), &check_x1, &check_x2);
 
     if (total_roots != sample->roots.total_roots)
         return false;
