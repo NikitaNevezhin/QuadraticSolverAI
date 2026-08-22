@@ -81,7 +81,7 @@ int    GetAllCoeffs             (double *a, double *b, double *c);
 
 bool   IsMore                   (const double x1, const double x2);
 
-bool   RunTest                  (struct Equation test);
+bool   RunTest                  (struct Equation *test);
 
 bool   RunAllTests              (struct Equation *samples, int samples_amount);
 
@@ -323,31 +323,31 @@ int GetCoeff(double *coeff, int symb) // returns 1 if succeeded, 0 if failed
 }
 
 
-bool RunTest(struct Equation sample)
+bool RunTest(struct Equation *sample)
 {
     double check_x1 = 0.0, check_x2 = 0.0;
     int total_roots = 0;
 
-    total_roots = QuadraticSolver(sample.coeffs.a, sample.coeffs.b, sample.coeffs.c, &check_x1, &check_x2);
+    total_roots = QuadraticSolver(sample->coeffs.a, sample->coeffs.b, sample->coeffs.c, &check_x1, &check_x2);
 
-    if (total_roots != sample.roots.total_roots)
+    if (total_roots != sample->roots.total_roots)
         return false;
 
     if (total_roots == ZERO || total_roots == INFINITE_NUMBER)
         return true;
 
     else if (total_roots == ONE)
-        return FloatEqual(check_x1, sample.roots.x1);
+        return FloatEqual(check_x1, sample->roots.x1);
 
     else
-        return FloatEqual(check_x1, sample.roots.x1) && FloatEqual(check_x2, sample.roots.x2);
+        return FloatEqual(check_x1, sample->roots.x1) && FloatEqual(check_x2, sample->roots.x2);
 }
 
 bool RunAllTests(struct Equation *samples, int samples_amount)
 {
     for (int i = 0; i < samples_amount; i++)
     {
-        if (!RunTest(samples[i]))
+        if (!RunTest(&samples[i]))
         {
             printf("Program failed pre-launch tests. Cannot execute this program\n");
             return false;
