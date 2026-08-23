@@ -1,7 +1,7 @@
-#define NDEBUG
+//#define NDEBUG
 // #define MYNDEBUG
 
-
+#include <TXLib.h>
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
@@ -10,23 +10,28 @@
 #include <string.h>
 #include <assert.h>
 
-#define FILENAME strrchr(__FILE__, '\\') + 1
+#define FILENAME GetFileName()
 #define ACCURACY 10e-6
 #define POLYNOMIAL_DEGREE 2 // for quadratic equation
 #define SIZE 100
 #define SAMPLES_AMOUNT 10
 
 #ifdef MYNDEBUG
-#define MyAssert(val)
+
+#define MyAssert(val, pf)
+
 #else
 
-#define MyAssert(val)     \
+#define MyAssert(val, pf)     \
     if (!val) \
     {      \
+        pf(); \
         printf("%s:%d: In function '%s'\n", FILENAME, __LINE__, __func__); \
-        printf("%s:%d: error on line %d", FILENAME,__LINE__, __LINE__); \
-        abort();    \
+        printf("%s:%d: error on line %d", FILENAME, __LINE__, __LINE__); \
+        abort(); \
+      \
     }
+
 #endif
 
 
@@ -59,39 +64,41 @@ struct Equation
 };
 
 
-void   GreetUser                (void);
+const char*  GetFileName              (void);
 
-void   ProgramFailed            (void);
+void         GreetUser                (void);
 
-void   SolveLinear              (struct Equation *equation_info);
+void         ProgramFailed            (void);
 
-void   SolveQuadratic           (struct Equation *equation_info);
+void         SolveLinear              (struct Equation *equation_info);
 
-bool   FloatEqual               (const double x, const double y);
+void         SolveQuadratic           (struct Equation *equation_info);
 
-double CalcDiscriminant         (struct Coefficients *input_coeffs);
+bool         FloatEqual               (const double x, const double y);
 
-void   ShowProgramResults       (struct RootsInfo *result_roots);
+double       CalcDiscriminant         (struct Coefficients *input_coeffs);
 
-int    GetCoeff                 (double *coeff, int symb);
+void         ShowProgramResults       (struct RootsInfo *result_roots);
 
-bool   DotProcessing            (char input[], int *i, bool *seen_dot, int curr_ch);
+int          GetCoeff                 (double *coeff, int symb);
 
-bool   MinusProcessing          (char input[], int *i, int curr_ch);
+bool         DotProcessing            (char input[], int *i, bool *seen_dot, int curr_ch);
 
-bool   IsSymbolTaken            (char input[], int *i, bool *seen_dot, int curr_ch);
+bool         MinusProcessing          (char input[], int *i, int curr_ch);
 
-bool   IsEmpty                  (char input[]);
+bool         IsSymbolTaken            (char input[], int *i, bool *seen_dot, int curr_ch);
 
-bool   EndsWithDot              (char input[]);
+bool         IsEmpty                  (char input[]);
 
-int    GetAllCoeffs             (struct Coefficients *input_coeffs);
+bool         EndsWithDot              (char input[]);
 
-bool   IsGreater                   (const double x1, const double x2);
+int          GetAllCoeffs             (struct Coefficients *input_coeffs);
 
-bool   RunTest                  (struct Equation *test);
+bool         IsGreater                (const double x1, const double x2);
 
-bool   RunAllTests              (void);
+bool         RunTest                  (struct Equation *test);
+
+bool         RunAllTests              (void);
 
 
 int main(void)
@@ -121,22 +128,28 @@ int main(void)
 }
 
 
+const char* GetFileName(void)
+{
+
+    const char* last_slash = strrchr(__FILE__, '\\');
+    if (last_slash)
+        return last_slash + 1;
+    return __FILE__;
+}
+
 void GreetUser(void)
 {
     printf("This program solves quadratic equation in the following format: "
            "ax^2 + bx + c = 0\n");
 }
-
 void ProgramFailed(void)
 {
     printf("Program failed\n");
 }
 
-
-
 void SolveLinear(struct Equation *equation_info)
 {
-    MyAssert(equation_info);
+    MyAssert(equation_info, ProgramFailed);
     // assert(equation_info);
 
     if (FloatEqual(equation_info->coeffs.b, 0.0))
@@ -174,8 +187,7 @@ void SolveQuadratic(struct Equation *equation_info)
 
     if (FloatEqual(equation_info->coeffs.a, 0.0))
     {
-        // input_coeffs = NULL;  // Костян был здесь и добавил прикольную фичу
-        // equation_info = NULL;
+        // equation_info = NULL; // фича Костяна
         SolveLinear(equation_info);
         return;
     }
@@ -421,5 +433,7 @@ bool RunAllTests()
     printf("Pre-launch tests completed successfully\n");
     return true;
 }
+
+
 
 
