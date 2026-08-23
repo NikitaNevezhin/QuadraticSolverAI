@@ -1,3 +1,6 @@
+#define NDEBUG
+// #define MYNDEBUG
+
 
 #include <stdio.h>
 #include <math.h>
@@ -7,10 +10,24 @@
 #include <string.h>
 #include <assert.h>
 
+#define FILENAME strrchr(__FILE__, '\\') + 1
 #define ACCURACY 10e-6
 #define POLYNOMIAL_DEGREE 2 // for quadratic equation
 #define SIZE 100
 #define SAMPLES_AMOUNT 10
+
+#ifdef MYNDEBUG
+#define MyAssert(val)
+#else
+
+#define MyAssert(val)     \
+    if (!val) \
+    {      \
+        printf("%s:%d: In function '%s'\n", FILENAME, __LINE__, __func__); \
+        printf("%s:%d: error on line %d", FILENAME,__LINE__, __LINE__); \
+        abort();    \
+    }
+#endif
 
 
 enum Roots
@@ -70,12 +87,11 @@ bool   EndsWithDot              (char input[]);
 
 int    GetAllCoeffs             (struct Coefficients *input_coeffs);
 
-bool   IsMore                   (const double x1, const double x2);
+bool   IsGreater                   (const double x1, const double x2);
 
 bool   RunTest                  (struct Equation *test);
 
 bool   RunAllTests              (void);
-
 
 
 int main(void)
@@ -120,7 +136,8 @@ void ProgramFailed(void)
 
 void SolveLinear(struct Equation *equation_info)
 {
-    assert(equation_info != NULL);
+    MyAssert(equation_info);
+    // assert(equation_info);
 
     if (FloatEqual(equation_info->coeffs.b, 0.0))
     {
@@ -190,7 +207,7 @@ bool FloatEqual(const double x, const double y)
 }
 
 
-bool IsMore(const double x1, const double x2)
+bool IsGreater(const double x1, const double x2)
 {
     return (x1 - x2) > ACCURACY;
 }
