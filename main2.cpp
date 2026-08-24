@@ -3,9 +3,8 @@
 
 #include <TXLib.h>
 #include <stdio.h>
-#include <stdio.h>
-#include "C:\Users\Никита\OneDrive\Рабочий стол\MyAssert.h"
-#include "C:\Users\Никита\OneDrive\Рабочий стол\MyAssert.h"
+#include "FloatTools.h"
+#include "MyAssert.h"
 #include <math.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -13,8 +12,6 @@
 #include <string.h>
 #include <assert.h>
 
-
-#define ACCURACY 10e-6
 #define POLYNOMIAL_DEGREE 2 // for quadratic equation
 #define SIZE 100
 #define SAMPLES_AMOUNT 10
@@ -50,8 +47,6 @@ struct Equation
 };
 
 
-const char*  GetFileName              (void);
-
 void         GreetUser                (void);
 
 void         ProgramFailed            (void);
@@ -59,8 +54,6 @@ void         ProgramFailed            (void);
 void         SolveLinear              (struct Equation *equation_info);
 
 void         SolveQuadratic           (struct Equation *equation_info);
-
-bool         FloatEqual               (const double x, const double y);
 
 double       CalcDiscriminant         (struct Coefficients *input_coeffs);
 
@@ -79,8 +72,6 @@ bool         IsEmpty                  (char input[]);
 bool         EndsWithDot              (char input[]);
 
 int          GetAllCoeffs             (struct Coefficients *input_coeffs);
-
-bool         IsGreater                (const double x1, const double x2);
 
 bool         RunTest                  (struct Equation *test);
 
@@ -114,20 +105,12 @@ int main(void)
 }
 
 
-const char* GetFileName(void)
-{
-
-    const char* last_slash = strrchr(__FILE__, '\\');
-    if (last_slash)
-        return last_slash + 1;
-    return __FILE__;
-}
-
 void GreetUser(void)
 {
     printf("This program solves quadratic equation in the following format: "
            "ax^2 + bx + c = 0\n");
 }
+
 void ProgramFailed(void)
 {
     printf("Program failed\n");
@@ -196,18 +179,6 @@ void SolveQuadratic(struct Equation *equation_info)
         else
             equation_info->roots.total_roots = TWO;
     }
-}
-
-
-bool FloatEqual(const double x, const double y)
-{
-    return fabs(x - y) < ACCURACY;
-}
-
-
-bool IsGreater(const double x1, const double x2)
-{
-    return (x1 - x2) > ACCURACY;
 }
 
 
