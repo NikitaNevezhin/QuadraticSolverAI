@@ -10,7 +10,7 @@
 #include <string.h>
 #include <assert.h>
 
-#define FILENAME GetFileName()
+
 #define ACCURACY 10e-6
 #define POLYNOMIAL_DEGREE 2 // for quadratic equation
 #define SIZE 100
@@ -26,8 +26,8 @@
     if (!val) \
     {      \
         pf(); \
-        printf("%s:%d: In function '%s'\n", FILENAME, __LINE__, __func__); \
-        printf("%s:%d: error on line %d", FILENAME, __LINE__, __LINE__); \
+        printf("%s:%d: In function '%s'\n", GetFileName(), __LINE__, __func__); \
+        printf("%s:%d: error on line %d", GetFileName(), __LINE__, __LINE__); \
         abort(); \
       \
     }
@@ -187,7 +187,7 @@ void SolveQuadratic(struct Equation *equation_info)
 
     if (FloatEqual(equation_info->coeffs.a, 0.0))
     {
-        // equation_info = NULL; // фича Костяна
+        equation_info = NULL; // фича Костяна
         SolveLinear(equation_info);
         return;
     }
