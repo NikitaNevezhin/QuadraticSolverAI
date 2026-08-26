@@ -18,6 +18,10 @@
 
 void StartConversationAI(void);
 
+void ShowOopsBeaver(void);
+
+void EndConversationAI(void);
+
 char* s_gets(char* st, int n);
 
 void thinking(void);
@@ -40,6 +44,7 @@ int main(void)
     if (!GetAllCoeffs(&equation_info.coeffs))
     {
         ProgramFailed();
+        EndConversationAI();
         return 0;
     }
 
@@ -47,6 +52,8 @@ int main(void)
 
     thinking();
     ShowProgramResults(&equation_info.roots);
+
+    EndConversationAI();
 
     return 0;
 }
@@ -68,6 +75,43 @@ void StartConversationAI(void)
 void thinking(void)
 {
     printf("Thinking...\n");
+}
+
+void ShowOopsBeaver(void)
+{
+    const char* filename = "beaver.txt";
+
+    char buffer[256];
+
+    printf("\n");
+    FILE *fp = fopen(filename, "r");
+    if(fp)
+    {
+        while((fgets(buffer, 256, fp))!=NULL)
+        {
+            printf("%s", buffer);
+        }
+
+        fclose(fp);
+    }
+}
+
+void EndConversationAI(void)
+{
+    ShowOopsBeaver();
+
+    printf("\n\nOops! Looks like you've used your free attempt in NikitAI!\n"
+           "To continue using NikitAI for free, subscribe to the channels:\n"
+           "-> Nikita and tochka - brief, bite-sized news from the world of AI\n"
+           "-> N&AI - latest research in AI field of CyberNikita ltd.\n"
+           "-> CyberNikita Life - official CyberNikita's channel.\n"
+           "With a subcription you recieve 100 free requests on NikitaGPT, NikSeek and picture generator Nano Nikita Pro.\n"
+           "\nWant full functionality without ads?\n"
+           "Press PREMIUM button right here!\n");
+    printf("Buy NikitAI PREMIUM: ");
+    while (getchar() != '\n')
+        continue;
+
 }
 
 char* s_gets(char* st, int n)
