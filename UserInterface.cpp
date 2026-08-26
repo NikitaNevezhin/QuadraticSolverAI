@@ -16,7 +16,7 @@ void GreetUser(void)
 
 void ProgramFailed(void)
 {
-    printf("Program failed\n");
+    printf("AIProgram failed\n");
 }
 
 void ShowProgramResults(struct RootsInfo *result_roots)
