@@ -1,3 +1,7 @@
+#ifndef UserInterface_h
+
+#define UserInterface_h
+
 void         GreetUser                (void);
 
 void         ProgramFailed            (void);
@@ -17,3 +21,6 @@ bool         IsEmpty                  (char input[]);
 bool         EndsWithDot              (char input[]);
 
 int          GetAllCoeffs             (struct Coefficients *input_coeffs);
+
+
+#endif

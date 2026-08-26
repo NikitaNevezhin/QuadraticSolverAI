@@ -1,3 +1,7 @@
+#ifndef MyAssert_h
+
+#define MyAssert_h
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,3 +32,4 @@
 #endif
 
 
+#endif

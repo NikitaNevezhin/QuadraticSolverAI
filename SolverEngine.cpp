@@ -5,6 +5,8 @@
 #include "FloatTools.h"
 #include "MyAssert.h"
 
+#include <assert.h>
+
 double CalcDiscriminant(struct Coefficients *input_coeffs)
 {
     MyAssert(input_coeffs, ProgramFailed);
@@ -15,7 +17,7 @@ double CalcDiscriminant(struct Coefficients *input_coeffs)
 void SolveLinear(struct Equation *equation_info)
 {
     MyAssert(equation_info, ProgramFailed);
-    // assert(equation_info);
+    //assert(equation_info);
 
     if (FloatEqual(equation_info->coeffs.b, 0.0))
     {

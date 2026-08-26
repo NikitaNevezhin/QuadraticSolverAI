@@ -10,8 +10,8 @@
 
 void GreetUser(void)
 {
-    printf("This program solves quadratic equation in the following format: "
-           "ax^2 + bx + c = 0\n");
+    printf("This AIprogram solves quadratic equation in the following format: "
+           "ax^2 + bx + c = 0\nPlease, enter the coeffs:\n");
 }
 
 void ProgramFailed(void)

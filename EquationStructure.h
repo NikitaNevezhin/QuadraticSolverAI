@@ -1,3 +1,6 @@
+#ifndef EquationStructure_h
+#define EquationStructure_h
+
 enum Roots
 {
     INFINITE_NUMBER = -1,
@@ -5,6 +8,7 @@ enum Roots
     ONE = 1,
     TWO = 2
 };
+
 
 struct Coefficients
 {
@@ -25,3 +29,6 @@ struct Equation
     struct Coefficients coeffs;
     struct RootsInfo roots;
 };
+
+
+#endif
