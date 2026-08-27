@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 
+#include "UserInterface.h"
 #include "EquationStructure.h"
 #include "MyAssert.h"
 

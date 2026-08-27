@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "UserInterface.h"
+#include "ImitatorOfAI.h"
 
 #define MAX_MSG 100
 

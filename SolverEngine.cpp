@@ -1,11 +1,13 @@
 #include <math.h>
+#include <assert.h>
 
+#include "SolverEngine.h"
 #include "EquationStructure.h"
 #include "UserInterface.h"
 #include "FloatTools.h"
 #include "MyAssert.h"
 
-#include <assert.h>
+
 
 double CalcDiscriminant(struct Coefficients *input_coeffs)
 {
