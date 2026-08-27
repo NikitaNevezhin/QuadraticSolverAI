@@ -19,6 +19,25 @@ void ProgramFailed(void)
     printf("AIProgram failed\n");
 }
 
+char* ReadLine(char* st, int n)
+{
+    char* ret_val;
+    char* newline;
+
+    ret_val = fgets(st, n, stdin);
+
+    if (ret_val)
+    {
+        newline = strchr(st, '\n');
+        if (newline)
+            *newline = '\0';
+        else
+            while (getchar() != '\n')
+                continue;
+    }
+    return ret_val;
+}
+
 void ShowProgramResults(struct RootsInfo *result_roots)
 {
     MyAssert(result_roots, ProgramFailed);

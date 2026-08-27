@@ -6,6 +6,8 @@ void         GreetUser                (void);
 
 void         ProgramFailed            (void);
 
+char*        ReadLine                 (char* st, int n);
+
 void         ShowProgramResults       (struct RootsInfo *result_roots);
 
 int          GetCoeff                 (double *coeff, int symb);

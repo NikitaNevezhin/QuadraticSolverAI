@@ -1,26 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "UserInterface.h"
+
 #define MAX_MSG 100
-
-char* s_gets(char* st, int n)
-{
-    char* ret_val;
-    char* newline;
-
-    ret_val = fgets(st, n, stdin);
-
-    if (ret_val)
-    {
-        newline = strchr(st, '\n');
-        if (newline)
-            *newline = '\0';
-        else
-            while (getchar() != '\n')
-                continue;
-    }
-    return ret_val;
-}
 
 
 void StartConversationAI(void)
@@ -29,7 +12,7 @@ void StartConversationAI(void)
 
     printf("Hello! My name is NikitAI! I am your personal quadratic equation solver. Wanna start the program?\n");;
 
-    while(strcmp(s_gets(input, MAX_MSG), "Yes") != 0)
+    while(strcmp(ReadLine(input, MAX_MSG), "Yes") != 0)
     {
         printf("Sorry, I can't understand that. Enter 'Yes' if you wanna start the program\n");
     }
