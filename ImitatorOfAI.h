@@ -8,6 +8,6 @@ void ShowOopsBeaver(void);
 
 void EndConversationAI(void);
 
-void thinking(void);
+void Thinking(void);
 
 #endif

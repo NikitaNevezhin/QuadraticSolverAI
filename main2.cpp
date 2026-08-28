@@ -19,11 +19,7 @@ int main(void)
 {
     StartConversationAI();
 
-    struct Equation equation_info =
-    {
-        {0.0, 0.0, 0.0},
-        {0, 0.0, 0.0}
-    };
+    struct Equation equation_info = {};
 
     if (!RunAllTests())
         return 0;
@@ -39,7 +35,7 @@ int main(void)
 
     SolveQuadratic(&equation_info);
 
-    thinking();
+    Thinking();
 
     ShowProgramResults(&equation_info.roots);
 

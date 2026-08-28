@@ -6,6 +6,8 @@
 
 #define MAX_MSG 100
 
+#define LINE_SIZE 256
+
 
 void StartConversationAI(void)
 {
@@ -21,7 +23,7 @@ void StartConversationAI(void)
     printf("Great! Thinking...\n");
 }
 
-void thinking(void)
+void Thinking(void) //
 {
     printf("Thinking...\n");
 }
@@ -30,13 +32,13 @@ void ShowOopsBeaver(void)
 {
     const char* filename = "beaver.txt";
 
-    char buffer[256];
+    char buffer[LINE_SIZE] = {};
 
     printf("\n");
     FILE *fp = fopen(filename, "r");
     if(fp)
     {
-        while((fgets(buffer, 256, fp))!=NULL)
+        while((fgets(buffer, LINE_SIZE, fp))!=NULL)
         {
             printf("%s", buffer);
         }

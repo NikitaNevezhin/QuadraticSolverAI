@@ -1,6 +1,10 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
+#include <stdlib.h>
 #include <math.h>
+
 
 #include "TestRunner.h"
 #include "UserInterface.h"
@@ -10,6 +14,38 @@
 #include "FloatTools.h"
 
 #define SAMPLES_AMOUNT 10
+#define LINE_SIZE 256
+#define VALUE_SIZE 20
+
+void SkipLine(FILE *fp)
+{
+    char buffer[LINE_SIZE] = {};
+    fgets(buffer, LINE_SIZE, fp);
+}
+
+bool GetOneEquation(FILE *fp, struct Equation* equation_info)
+{
+    char x1[VALUE_SIZE] = {};
+    char x2[VALUE_SIZE] = {};
+
+    if (fscanf(fp, "%lg %lg %lg %d %s %s", &equation_info->coeffs.a, &equation_info->coeffs.b, &equation_info->coeffs.c, &equation_info->roots.total_roots, x1, x2) != 6)
+        return false;
+
+    if (strcmp(x1, "NAN") == 0)
+        equation_info->roots.x1 = NAN;
+
+    else
+        equation_info->roots.x1 = atof(x1);
+
+    if (strcmp(x1, "NAN") == 0)
+        equation_info->roots.x2 = NAN;
+
+    else {
+        equation_info->roots.x2 = atof(x2);
+    }
+
+    return true;
+}
 
 
 bool RunTest(struct Equation *sample)
@@ -35,29 +71,30 @@ bool RunTest(struct Equation *sample)
 
 bool RunAllTests()
 {
-    struct Equation program_samples[SAMPLES_AMOUNT] =
-    {
-        { {0,     0,  0},  {INFINITE_NUMBER,      NAN, NAN} },
-        { {0,     0,  2},  {           ZERO,      NAN, NAN} },
-        { {0,    -1, -1},  {            ONE,       -1, NAN} },
-        { {0,     1,  2},  {            ONE,       -2, NAN} },
-        { {1,     0,  0},  {            ONE,        0, NAN} },
-        { {1,     0,  2},  {           ZERO,      NAN, NAN} },
-        { {1,     0, -4},  {            TWO,       -2,   2} },
-        { {1,     2,  0},  {            TWO,       -2,   0} },
-        { {1,     2,  1},  {            ONE,       -1, NAN} },
-        { {1.5, 2.5, -4},  {            TWO,   -8.0/3,   1} }
-    };
+    struct Equation equation_info = {};
 
-    for (int i = 0; i < SAMPLES_AMOUNT; i++)
+    const char* filename = "TESTS.txt";
+
+    FILE *fp = fopen(filename, "r");
+
+    if (!fp)
     {
-        if (!RunTest(&program_samples[i]))
+        printf("No such file as %s. Program failed\n", filename);
+        return false;
+    }
+
+    SkipLine(fp);
+    while (GetOneEquation(fp, &equation_info))
+    {
+        if (!RunTest(&equation_info))
         {
             printf("Program failed pre-launch tests. Cannot execute this program\n");
+            fclose(fp);
             return false;
         }
     }
 
+    fclose(fp);
     printf("Pre-launch tests completed successfully\n");
     return true;
 }
