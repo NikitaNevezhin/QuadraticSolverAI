@@ -104,13 +104,11 @@ bool RunTest(struct Equation *sample, int test_number)
     }
 }
 
-bool RunAllTests()
+bool RunAllTests(const char* filename)
 {
     int test_counter = 0;
 
     struct Equation equation_info = {};
-
-    const char* filename = "TESTS.txt";
 
     FILE *file = fopen(filename, "r");
 

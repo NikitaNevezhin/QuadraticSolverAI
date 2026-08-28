@@ -4,7 +4,7 @@
 
 bool         RunTest                  (struct Equation *test, int test_number);
 
-bool         RunAllTests              (void);
+bool         RunAllTests              (const char* filename);
 
 void         SkipLine                 (FILE *fp);
 

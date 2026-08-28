@@ -15,34 +15,81 @@
 #include "SolverEngine.h"
 #include "ImitatorOfAI.h"
 
-int main(void)
+void ExplainProgram(void);
+
+int main(int argc, char* argv[])
 {
-    StartConversationAI();
-
-    struct Equation equation_info = {};
-
-    if (!RunAllTests())
-        return EXIT_FAILURE;
-
-    GreetUser();
-
-    if (!GetAllCoeffs(&equation_info.coeffs))
+    if (argc == 1)
     {
-        ProgramFailed();
+        StartConversationAI();
+
+        struct Equation equation_info = {};
+
+        GreetUser();
+
+        if (!GetAllCoeffs(&equation_info.coeffs))
+        {
+            ProgramFailed();
+            EndConversationAI();
+            return EXIT_FAILURE;
+        }
+
+        SolveQuadratic(&equation_info);
+
+        Thinking();
+
+        ShowProgramResults(&equation_info.roots);
+
         EndConversationAI();
+
+        return EXIT_SUCCESS;
+    }
+
+    else if (argc == 2)
+    {
+        if (strcmp(argv[1], "-h") == 0)
+        {
+            ExplainProgram();
+            return EXIT_SUCCESS;
+        }
+        printf("Invalid flags\n");
         return EXIT_FAILURE;
     }
 
-    SolveQuadratic(&equation_info);
+    else if (argc == 3)
+    {
+        if (strcmp(argv[1], "-t") == 0)
+        {
+            if (RunAllTests(argv[2]))
+                return EXIT_SUCCESS;
 
-    Thinking();
+            return EXIT_FAILURE;
+        }
+    }
 
-    ShowProgramResults(&equation_info.roots);
+    else
+    {
+        printf("Too much flags entered\n");
+        return EXIT_FAILURE;
+    }
 
-    EndConversationAI();
-
-    return EXIT_SUCCESS;
+    printf("Invalid flags\n");
+    return EXIT_FAILURE;
 }
+
+void ExplainProgram(void)
+{
+    printf("This program solves quadratic equation.\n\n"
+           "User gives three arguments as input and gets the existing roots.\n"
+           "If roots doesn't exist, user gets \"There are no real roots\" message\n"
+           "If there are infinite number of roots, user gets \"There is an infinite number of solutions\" message\n\n"
+           "FLAGS:\n"
+           "\"-h\" - gives the general info about the program\n"
+           "\"-t SOMEFILE\" - takes info from SOMEFILE and tests program on its info in case it is possible\n\n"
+           "If there are no flags, you start conversation with NikitAI\n");
+}
+
+
 
 
 
