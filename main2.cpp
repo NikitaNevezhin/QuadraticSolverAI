@@ -19,10 +19,11 @@
 #define GREEN "\033[32m"
 #define RESET "\033[0m"
 
-#define HELP_FLAG  "-h"
-#define TEST_FLAG  "-t"
-#define READ_FLAG  "-r"
-#define WRITE_FLAG "-w"
+#define HELP_FLAG       "-h"
+#define TEST_FLAG       "-t"
+#define READ_FLAG       "-r"
+#define WRITE_FLAG      "-w"
+#define READ_WRITE_FLAG "-rw"
 
 void ExplainProgram  (void);
 void InvalidFlags    (void);
@@ -156,8 +157,35 @@ int AnalyzeFlags(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
+    else if (argc == 4)
+    {
+        if (strcmp(argv[1], READ_WRITE_FLAG) == 0)
+        {
+            struct Equation equation_info = {};
+
+            const char* input_file = argv[2];
+            const char* output_file = argv[3];
+
+            if (!ReadCoeffs(input_file, &equation_info))
+                return EXIT_FAILURE;
+
+            SolveQuadratic(&equation_info);
+
+            if (!WriteRoots(output_file, &equation_info))
+                return EXIT_FAILURE;
+
+            EndConversationAI();
+
+            return EXIT_SUCCESS;
+        }
+        printf("couldnt read flag\n");
+        InvalidFlags();
+        return EXIT_FAILURE;
+    }
+
     else
     {
+        printf("Too much flags\n");
         InvalidFlags();
         return EXIT_FAILURE;
     }
