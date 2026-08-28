@@ -22,20 +22,18 @@
 #define GREEN "\033[32m"
 #define RESET "\033[0m"
 
-void SkipLine(FILE *fp)
+void SkipLine(FILE *file)
 {
     char buffer[LINE_SIZE] = {};
-    fgets(buffer, LINE_SIZE, fp);
+    fgets(buffer, LINE_SIZE, file);
 }
 
-//todo: fseek
-
-bool GetOneEquation(FILE *fp, struct Equation* equation_info)
+bool GetOneEquation(FILE *file, struct Equation* equation_info)
 {
     char x1[VALUE_SIZE] = {};
     char x2[VALUE_SIZE] = {};
 
-    if (fscanf(fp, "%lg %lg %lg %d %s %s", &equation_info->coeffs.a,
+    if (fscanf(file, "%lg %lg %lg %d %s %s", &equation_info->coeffs.a,
                                            &equation_info->coeffs.b,
                                            &equation_info->coeffs.c,
                                            &equation_info->roots.total_roots, x1, x2) != 6)

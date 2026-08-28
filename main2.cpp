@@ -15,12 +15,18 @@
 #include "SolverEngine.h"
 #include "ImitatorOfAI.h"
 
+#define RED   "\033[31m"
+#define GREEN "\033[32m"
+#define RESET "\033[0m"
+
 #define HELP_FLAG "-h"
 #define TEST_FLAG "-t"
+#define READ_FLAG "-r"
 
 void ExplainProgram  (void);
 void InvalidFlags    (void);
 int  AnalyzeFlags    (int argc, char *argv[]);
+bool ReadCoeffs      (const char* filename, struct Equation* equation_info);
 
 int main(int argc, char* argv[])
 {
@@ -96,6 +102,25 @@ int AnalyzeFlags(int argc, char *argv[])
             return EXIT_FAILURE;
         }
 
+        else if (strcmp(argv[1], READ_FLAG) == 0)
+        {
+            struct Equation equation_info = {};
+            const char* filename = argv[2];
+
+            if (!ReadCoeffs(filename, &equation_info))
+                return EXIT_FAILURE;
+
+            SolveQuadratic(&equation_info);
+
+            Thinking();
+
+            ShowProgramResults(&equation_info.roots);
+
+            EndConversationAI();
+
+            return EXIT_SUCCESS;
+        }
+
         InvalidFlags();
         return EXIT_FAILURE;
     }
@@ -105,6 +130,29 @@ int AnalyzeFlags(int argc, char *argv[])
         InvalidFlags();
         return EXIT_FAILURE;
     }
+}
+
+bool ReadCoeffs(const char* filename, struct Equation* equation_info)   // returns true if succeded, false if failed
+{
+    FILE *file = fopen(filename, "r");
+
+    if (!file)
+    {
+        printf(RED "No such file as %s. Program failed\n" RESET, filename);
+        return false;
+    }
+
+    SkipLine(file);
+
+    if (fscanf(file, "%lg %lg %lg", &equation_info->coeffs.a,
+                                    &equation_info->coeffs.b,
+                                    &equation_info->coeffs.c) != 3)
+    {
+        printf(RED "Invalid data in file %s. Couldn't read from it\n" RESET, filename);
+        return false;
+    }
+
+    return true;
 }
 
 
