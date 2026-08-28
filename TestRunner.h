@@ -2,7 +2,7 @@
 
 #define TestRunner_h
 
-bool         RunTest                  (struct Equation *test);
+bool         RunTest                  (struct Equation *test, int test_number);
 
 bool         RunAllTests              (void);
 
