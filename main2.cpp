@@ -19,14 +19,16 @@
 #define GREEN "\033[32m"
 #define RESET "\033[0m"
 
-#define HELP_FLAG "-h"
-#define TEST_FLAG "-t"
-#define READ_FLAG "-r"
+#define HELP_FLAG  "-h"
+#define TEST_FLAG  "-t"
+#define READ_FLAG  "-r"
+#define WRITE_FLAG "-w"
 
 void ExplainProgram  (void);
 void InvalidFlags    (void);
 int  AnalyzeFlags    (int argc, char *argv[]);
 bool ReadCoeffs      (const char* filename, struct Equation* equation_info);
+bool WriteRoots      (const char* filename, struct Equation* equation_info);
 
 int main(int argc, char* argv[])
 {
@@ -121,6 +123,35 @@ int AnalyzeFlags(int argc, char *argv[])
             return EXIT_SUCCESS;
         }
 
+        else if (strcmp(argv[1], WRITE_FLAG) == 0)
+        {
+            StartConversationAI();
+
+            struct Equation equation_info = {};
+            const char* filename = argv[2];
+
+            GreetUser();
+
+            if (!GetAllCoeffs(&equation_info.coeffs))
+            {
+                ProgramFailed();
+                EndConversationAI();
+                return EXIT_FAILURE;
+            }
+
+            SolveQuadratic(&equation_info);
+
+            Thinking();
+
+            if (WriteRoots(filename, &equation_info))
+            {
+                EndConversationAI();
+                return EXIT_SUCCESS;
+            }
+
+            return EXIT_FAILURE;
+        }
+
         InvalidFlags();
         return EXIT_FAILURE;
     }
@@ -151,6 +182,23 @@ bool ReadCoeffs(const char* filename, struct Equation* equation_info)   // retur
         printf(RED "Invalid data in file %s. Couldn't read from it\n" RESET, filename);
         return false;
     }
+
+    return true;
+}
+
+bool WriteRoots(const char* filename, struct Equation* equation_info)
+{
+    FILE *file = fopen(filename, "w");
+
+    if (!file)
+    {
+        printf(RED "No such file as %s. Program failed\n" RESET, filename);
+        return false;
+    }
+
+    fprintf(file, "total roots: %d\n", equation_info->roots.total_roots);
+    fprintf(file, "x1 = %lg\n", equation_info->roots.x1);
+    fprintf(file, "x2 = %lg\n", equation_info->roots.x2);
 
     return true;
 }
