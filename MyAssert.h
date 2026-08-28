@@ -8,11 +8,11 @@
 
 #ifdef MYNDEBUG
 
-#define MyAssert(val, pf)
+#define MyAssert(val, action)
 
 #else
 
-#define MyAssert(val, pf)                                                   \
+#define MyAssert(val, action)                                                   \
     if (!val)                                                               \
     {                                                                       \
                                                                             \
@@ -22,7 +22,7 @@
         else                                                                \
             file_name++;                                                    \
                                                                             \
-        pf();                                                               \
+        action();                                                               \
         printf("%s:%d: In function '%s'\n", file_name, __LINE__, __func__); \
         printf("%s:%d: error on line %d", file_name, __LINE__, __LINE__);   \
         abort();                                                            \

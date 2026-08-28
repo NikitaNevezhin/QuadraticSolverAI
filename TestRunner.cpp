@@ -14,8 +14,9 @@
 #include "FloatTools.h"
 
 #define SAMPLES_AMOUNT 10
-#define LINE_SIZE 256
-#define VALUE_SIZE 20
+#define LINE_SIZE      256
+#define VALUE_SIZE     20
+#define COLUMNS        6
 
 #define RED   "\033[31m"
 #define GREEN "\033[32m"
@@ -27,12 +28,17 @@ void SkipLine(FILE *fp)
     fgets(buffer, LINE_SIZE, fp);
 }
 
+//todo: fseek
+
 bool GetOneEquation(FILE *fp, struct Equation* equation_info)
 {
     char x1[VALUE_SIZE] = {};
     char x2[VALUE_SIZE] = {};
 
-    if (fscanf(fp, "%lg %lg %lg %d %s %s", &equation_info->coeffs.a, &equation_info->coeffs.b, &equation_info->coeffs.c, &equation_info->roots.total_roots, x1, x2) != 6)
+    if (fscanf(fp, "%lg %lg %lg %d %s %s", &equation_info->coeffs.a,
+                                           &equation_info->coeffs.b,
+                                           &equation_info->coeffs.c,
+                                           &equation_info->roots.total_roots, x1, x2) != 6)
         return false;
 
     if (strcmp(x1, "NAN") == 0)
@@ -44,9 +50,8 @@ bool GetOneEquation(FILE *fp, struct Equation* equation_info)
     if (strcmp(x2, "NAN") == 0)
         equation_info->roots.x2 = NAN;
 
-    else {
+    else
         equation_info->roots.x2 = atof(x2);
-    }
 
     return true;
 }
@@ -83,6 +88,7 @@ bool RunTest(struct Equation *sample, int test_number)
         }
 
     }
+
     else
     {
         if (FloatEqual(result_info.roots.x1, sample->roots.x1) && FloatEqual(result_info.roots.x2, sample->roots.x2))
@@ -106,36 +112,36 @@ bool RunAllTests()
 
     const char* filename = "TESTS.txt";
 
-    FILE *fp = fopen(filename, "r");
+    FILE *file = fopen(filename, "r");
 
-    if (!fp)
+    if (!file)
     {
         printf(RED "No such file as %s. Program failed\n" RESET, filename);
         return false;
     }
 
-    SkipLine(fp);
-    while (GetOneEquation(fp, &equation_info))
+    SkipLine(file);
+    while (GetOneEquation(file, &equation_info))
     {
         test_counter++;
 
         if (!RunTest(&equation_info, test_counter))
         {
             printf(RED "Program failed pre-launch tests. Cannot execute this program\n" RESET);
-            fclose(fp);
+            fclose(file);
             return false;
         }
     }
 
-    if (fgetc(fp) != EOF)
+    if (fgetc(file) != EOF)
     {
-        fclose(fp);
+        fclose(file);
         printf(RED "#File reading error:\n" RESET);
         printf(RED "Invalid value on line %d of %s\n" RESET, test_counter + 1, filename); // error line equals to test_counter + 1 as first line is title
         return false;
     }
 
-    fclose(fp);
+    fclose(file);
     printf(GREEN "%d/%d " RESET, test_counter, test_counter);
     printf(GREEN "pre-launch tests completed successfully\n" RESET);
     return true;

@@ -22,7 +22,7 @@ int main(void)
     struct Equation equation_info = {};
 
     if (!RunAllTests())
-        return 0;
+        return EXIT_FAILURE;
 
     GreetUser();
 
@@ -30,7 +30,7 @@ int main(void)
     {
         ProgramFailed();
         EndConversationAI();
-        return 0;
+        return EXIT_FAILURE;
     }
 
     SolveQuadratic(&equation_info);
@@ -41,7 +41,7 @@ int main(void)
 
     EndConversationAI();
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 
