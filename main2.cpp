@@ -15,7 +15,12 @@
 #include "SolverEngine.h"
 #include "ImitatorOfAI.h"
 
-void ExplainProgram(void);
+#define HELP_FLAG "-h"
+#define TEST_FLAG "-t"
+
+void ExplainProgram  (void);
+void InvalidFlags    (void);
+int  AnalyzeFlags    (int argc, char *argv[]);
 
 int main(int argc, char* argv[])
 {
@@ -45,36 +50,9 @@ int main(int argc, char* argv[])
         return EXIT_SUCCESS;
     }
 
-    else if (argc == 2)
-    {
-        if (strcmp(argv[1], "-h") == 0)
-        {
-            ExplainProgram();
-            return EXIT_SUCCESS;
-        }
-        printf("Invalid flags\n");
-        return EXIT_FAILURE;
-    }
-
-    else if (argc == 3)
-    {
-        if (strcmp(argv[1], "-t") == 0)
-        {
-            if (RunAllTests(argv[2]))
-                return EXIT_SUCCESS;
-
-            return EXIT_FAILURE;
-        }
-    }
-
     else
-    {
-        printf("Too much flags entered\n");
-        return EXIT_FAILURE;
-    }
+        return AnalyzeFlags(argc, argv);
 
-    printf("Invalid flags\n");
-    return EXIT_FAILURE;
 }
 
 void ExplainProgram(void)
@@ -87,6 +65,46 @@ void ExplainProgram(void)
            "\"-h\" - gives the general info about the program\n"
            "\"-t SOMEFILE\" - takes info from SOMEFILE and tests program on its info in case it is possible\n\n"
            "If there are no flags, you start conversation with NikitAI\n");
+}
+
+void InvalidFlags(void)
+{
+    printf("Invalid flags\n");
+}
+
+int AnalyzeFlags(int argc, char *argv[])
+{
+    if (argc == 2)
+    {
+        if (strcmp(argv[1], HELP_FLAG) == 0)
+        {
+            ExplainProgram();
+            return EXIT_SUCCESS;
+        }
+
+        InvalidFlags();
+        return EXIT_FAILURE;
+    }
+
+    else if (argc == 3)
+    {
+        if (strcmp(argv[1], TEST_FLAG) == 0)
+        {
+            if (RunAllTests(argv[2]))
+                return EXIT_SUCCESS;
+
+            return EXIT_FAILURE;
+        }
+
+        InvalidFlags();
+        return EXIT_FAILURE;
+    }
+
+    else
+    {
+        InvalidFlags();
+        return EXIT_FAILURE;
+    }
 }
 
 
