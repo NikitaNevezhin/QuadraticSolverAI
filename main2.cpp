@@ -27,7 +27,7 @@
 
 void ExplainProgram  (void);
 void InvalidFlags    (void);
-int  AnalyzeFlags    (int argc, char *argv[]);
+int  ProcessFlags    (int argc, char *argv[]);
 bool ReadCoeffs      (const char* filename, struct Equation* equation_info);
 bool WriteRoots      (const char* filename, struct Equation* equation_info);
 
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
     }
 
     else
-        return AnalyzeFlags(argc, argv);
+        return ProcessFlags(argc, argv);
 
 }
 
@@ -81,7 +81,7 @@ void InvalidFlags(void)
     printf("Invalid flags\n");
 }
 
-int AnalyzeFlags(int argc, char *argv[])
+int ProcessFlags(int argc, char *argv[])
 {
     if (argc == 2)
     {
