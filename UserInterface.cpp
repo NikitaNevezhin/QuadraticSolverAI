@@ -5,22 +5,20 @@
 #include "UserInterface.h"
 #include "EquationStructure.h"
 #include "MyAssert.h"
+#include "ColorPrint.h"
 
 #define POLYNOMIAL_DEGREE  2 // for quadratic equation
 #define SIZE               100
 
-#define BLUE  "\033[34"
-#define RESET "\033[0m"
-
 void GreetUser(void)
 {
-    printf("This AIprogram solves quadratic equation in the following format: "
-           "ax^2 + bx + c = 0\nPlease, enter the coeffs:\n");
+    printf(LIGHT_BLUE "This AIprogram solves quadratic equation in the following format: "
+                      "ax^2 + bx + c = 0\nPlease, enter the coeffs:\n" RESET);
 }
 
 void ProgramFailed(void)
 {
-    printf("AIProgram failed\n");
+    printf(RED "AIProgram failed\n" RESET);
 }
 
 char* ReadLine(char* st, int n)
@@ -49,23 +47,23 @@ void ShowProgramResults(struct RootsInfo *result_roots)
     switch (result_roots->total_roots)
     {
         case ZERO:
-            printf("There are no real solutions\n");
+            printf(LIGHT_BLUE "There are no real solutions\n" RESET);
             break;
 
         case ONE:
-            printf("There is a single solution: %lf\n", result_roots->x1);
+            printf(LIGHT_BLUE "There is a single solution: %lf\n" RESET, result_roots->x1);
             break;
 
         case TWO:
-            printf("There are two solutions: %lf and %lf\n", result_roots->x1, result_roots->x2);
+            printf(LIGHT_BLUE "There are two solutions: %lf and %lf\n" RESET, result_roots->x1, result_roots->x2);
             break;
 
         case INFINITE_NUMBER:
-            printf("There is an infinite number of solutions\n");
+            printf(LIGHT_BLUE "There is an infinite number of solutions\n" RESET);
             break;
 
         default:
-            printf("Some error occured in function SolveQuadratic :( \n");
+            printf(RED "Some error occured in function SolveQuadratic :( \n" RESET);
             break;
     }
 }
@@ -137,7 +135,7 @@ int GetCoeff(double *coeff, int symb) // returns 1 if succeeded, 0 if failed
     int i = 0;
     bool seen_dot = false;
 
-    printf("Coeff %c: ", symb);
+    printf(LIGHT_BLUE "Coeff %c: " RESET, symb);
 
     while ( (curr_ch = getchar()) != '\n')
     {
@@ -146,7 +144,7 @@ int GetCoeff(double *coeff, int symb) // returns 1 if succeeded, 0 if failed
 
         else
         {
-            printf("Invalid input\n");
+            printf(RED "Invalid input\n" RESET);
             return 0;
         }
     }
@@ -155,7 +153,7 @@ int GetCoeff(double *coeff, int symb) // returns 1 if succeeded, 0 if failed
 
     if (IsEmpty(input) || EndsWithDot(input))
     {
-        printf("Invalid input\n");
+        printf(RED "Invalid input\n" RESET);
         return 0;
     }
 

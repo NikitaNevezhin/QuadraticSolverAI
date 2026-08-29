@@ -4,6 +4,7 @@
 
 #include "UserInterface.h"
 #include "ImitatorOfAI.h"
+#include "ColorPrint.h"
 
 #define MAX_MSG 100
 
@@ -32,19 +33,19 @@ void StartConversationAI(void)
 {
     char input[MAX_MSG] = {};
 
-    printf("Hello! My name is NikitAI! I am your personal quadratic equation solver. Wanna start the program?\n");;
+    printf(LIGHT_BLUE "Hello! My name is NikitAI! I am your personal quadratic equation solver. Wanna start the program?\n" RESET);
 
     while(!NoRegCmp(ReadLine(input, MAX_MSG), "Yes"))
     {
-        printf("Sorry, I can't understand that. Enter 'Yes' if you wanna start the program\n");
+        printf(LIGHT_BLUE "Sorry, I can't understand that. Enter 'Yes' if you wanna start the program\n" RESET);
     }
 
-    printf("Great! Thinking...\n");
+    printf(LIGHT_BLUE "Great! Thinking...\n" RESET);
 }
 
 void Thinking(void)
 {
-    printf("Thinking...\n");
+    printf(LIGHT_BLUE "Thinking...\n" RESET);
 }
 
 void ShowOopsBeaver(void)
@@ -61,7 +62,7 @@ void ShowOopsBeaver(void)
     {
         while((fgets(buffer, LINE_SIZE, fp))!=NULL)
         {
-            printf("%s", buffer);
+            printf(YELLOW "%s" RESET, buffer);
         }
 
         fclose(fp);
@@ -72,15 +73,15 @@ void EndConversationAI(void)
 {
     ShowOopsBeaver();
 
-    printf("\n\nOops! Looks like you've used your free attempt in NikitAI!\n"
-           "To continue using NikitAI for free, subscribe to the channels:\n"
-           "-> Nikita and tochka - brief, bite-sized news from the world of AI\n"
-           "-> N&AI - latest research in AI field of CyberNikita ltd.\n"
-           "-> CyberNikita Life - official CyberNikita's channel.\n"
-           "With a subcription you recieve 100 free requests on NikitaGPT, NikSeek and picture generator Nano Nikita Pro.\n"
-           "\nWant full functionality without ads?\n"
-           "Press PREMIUM button right here!\n");
-    printf("Buy NikitAI PREMIUM: ");
+    printf(LIGHT_BLUE "\n\nOops! Looks like you've used your free attempt in NikitAI!\n"
+                      "To continue using NikitAI for free, subscribe to the channels:\n"
+                      "-> Nikita and tochka - brief, bite-sized news from the world of AI\n"
+                      "-> N&AI - latest research in AI field of CyberNikita ltd.\n"
+                      "-> CyberNikita Life - official CyberNikita's channel.\n"
+                      "With a subcription you recieve 100 free requests on NikitaGPT, NikSeek and picture generator Nano Nikita Pro.\n"
+                      "\nWant full functionality without ads?\n"
+                      "Press PREMIUM button right here!\n" RESET);
+    printf(LIGHT_BLUE "Buy NikitAI PREMIUM: " RESET);
 
     while (getchar() != '\n')
         continue;
