@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "UserInterface.h"
 #include "ImitatorOfAI.h"
@@ -9,13 +10,31 @@
 #define LINE_SIZE 256
 
 
+bool NoRegCmp(const char s1[], const char s2[])
+{
+    int length1 = strlen(s1);
+    int length2 = strlen(s2);
+
+    if (length1 != length2)
+        return false;
+
+    for (int i = 0; i < length1; i++)
+    {
+        if (tolower(s1[i]) != tolower(s2[i]))
+            return false;
+    }
+
+    return true;
+}
+
+
 void StartConversationAI(void)
 {
     char input[MAX_MSG] = {};
 
     printf("Hello! My name is NikitAI! I am your personal quadratic equation solver. Wanna start the program?\n");;
 
-    while(strcmp(ReadLine(input, MAX_MSG), "Yes") != 0)
+    while(!NoRegCmp(ReadLine(input, MAX_MSG), "Yes"))
     {
         printf("Sorry, I can't understand that. Enter 'Yes' if you wanna start the program\n");
     }
@@ -23,7 +42,7 @@ void StartConversationAI(void)
     printf("Great! Thinking...\n");
 }
 
-void Thinking(void) //
+void Thinking(void)
 {
     printf("Thinking...\n");
 }
@@ -35,7 +54,9 @@ void ShowOopsBeaver(void)
     char buffer[LINE_SIZE] = {};
 
     printf("\n");
+
     FILE *fp = fopen(filename, "r");
+
     if(fp)
     {
         while((fgets(buffer, LINE_SIZE, fp))!=NULL)
@@ -60,6 +81,7 @@ void EndConversationAI(void)
            "\nWant full functionality without ads?\n"
            "Press PREMIUM button right here!\n");
     printf("Buy NikitAI PREMIUM: ");
+
     while (getchar() != '\n')
         continue;
 

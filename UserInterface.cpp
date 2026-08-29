@@ -6,8 +6,11 @@
 #include "EquationStructure.h"
 #include "MyAssert.h"
 
-#define POLYNOMIAL_DEGREE 2 // for quadratic equation
-#define SIZE 100
+#define POLYNOMIAL_DEGREE  2 // for quadratic equation
+#define SIZE               100
+
+#define BLUE  "\033[34"
+#define RESET "\033[0m"
 
 void GreetUser(void)
 {
@@ -166,7 +169,7 @@ int GetAllCoeffs(struct Coefficients *input_coeffs)    // returns 1 if succeeded
     MyAssert(input_coeffs, ProgramFailed);
 
     int i = 0;
-    double coeffs[POLYNOMIAL_DEGREE + 1] = {};  // POLYNOMIAL_DEGREE + 1 = amount of members of polynomial
+    double coeffs[POLYNOMIAL_DEGREE + 1] = {};         // POLYNOMIAL_DEGREE + 1 = amount of members of polynomial
     int coeff_letter = 'a';
 
     for (; i <= POLYNOMIAL_DEGREE; i++)
@@ -181,3 +184,4 @@ int GetAllCoeffs(struct Coefficients *input_coeffs)    // returns 1 if succeeded
 
     return 1;
 }
+

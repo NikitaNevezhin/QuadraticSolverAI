@@ -2,12 +2,14 @@
 
 #define ImitatorOfAI_h
 
-void StartConversationAI(void);
+bool NoRegCmp               (const char s1[], const char s2[]);
 
-void ShowOopsBeaver(void);
+void StartConversationAI    (void);
 
-void EndConversationAI(void);
+void ShowOopsBeaver         (void);
 
-void Thinking(void);
+void EndConversationAI      (void);
+
+void Thinking               (void);
 
 #endif

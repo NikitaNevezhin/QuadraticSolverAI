@@ -12,11 +12,11 @@
 #include "ImitatorOfAI.h"
 #include "UserInterface.h"
 
-#define HELP_FLAG       "-h"
-#define TEST_FLAG       "-t"
-#define READ_FLAG       "-r"
-#define WRITE_FLAG      "-w"
-#define READ_WRITE_FLAG "-rw"
+#define HELP_FLAG        "-h"
+#define TEST_FLAG        "-t"
+#define READ_FLAG        "-r"
+#define WRITE_FLAG       "-w"
+#define READ_WRITE_FLAG  "-rw"
 
 #define RED   "\033[31m"
 #define GREEN "\033[32m"
