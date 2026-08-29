@@ -20,6 +20,8 @@ void InvalidFlags(void)
     printf("Invalid flags\n");
 }
 
+//doxygen
+
 
 bool ReadCoeffs(const char* filename, struct Equation* equation_info)   // returns true if succeded, false if failed
 {
@@ -62,78 +64,101 @@ bool WriteRoots(const char* filename, struct Equation* equation_info)
     return true;
 }
 
+int ProcessHelp(char* argv[])
+{
+    if (strcmp(argv[1], HELP_FLAG) == 0 || strcmp(argv[1], LONG_HELP_FLAG) == 0)
+    {
+        ExplainProgram();
+        return EXIT_SUCCESS;
+    }
+
+    InvalidFlags();
+    return EXIT_FAILURE;
+}
+
+int ProcessTest(char* argv[])
+{
+    printf("Executing ProcessTest...\n");
+    if (strcmp(argv[1], TEST_FLAG) != 0 && strcmp(argv[1], LONG_TEST_FLAG) != 0)
+        return EXIT_FAILURE;
+
+    if (RunAllTests(argv[2]))
+        return EXIT_SUCCESS;
+
+    return EXIT_FAILURE;
+}
+
+int ProcessRead(char *argv[])
+{
+    printf("Executing ProcessRead...\n");
+    if (strcmp(argv[1], READ_FLAG) != 0 && strcmp(argv[1], LONG_READ_FLAG) != 0)
+    {
+        return EXIT_FAILURE;
+    }
+
+    struct Equation equation_info = {};
+
+    const char* filename = argv[2];
+
+    if (!ReadCoeffs(filename, &equation_info))
+        return EXIT_FAILURE;
+
+    SolveQuadratic(&equation_info);
+
+    Thinking();
+
+    ShowProgramResults(&equation_info.roots);
+
+    EndConversationAI();
+
+    return EXIT_SUCCESS;
+}
+
+int ProcessWrite(char *argv[])
+{
+    if (strcmp(argv[1], WRITE_FLAG) != 0 && strcmp(argv[1], LONG_WRITE_FLAG))
+    {
+        return EXIT_FAILURE;
+    }
+
+    StartConversationAI();
+
+    struct Equation equation_info = {};
+    const char* filename = argv[2];
+
+    GreetUser();
+
+    if (!GetAllCoeffs(&equation_info.coeffs))
+    {
+        ProgramFailed();
+        EndConversationAI();
+        return EXIT_FAILURE;
+    }
+
+    SolveQuadratic(&equation_info);
+
+    Thinking();
+
+    if (WriteRoots(filename, &equation_info))
+    {
+        EndConversationAI();
+        return EXIT_SUCCESS;
+    }
+
+    return EXIT_FAILURE;
+}
 
 int ProcessFlags(int argc, char *argv[])
 {
     if (argc == 2)
     {
-        if (strcmp(argv[1], HELP_FLAG) == 0)
-        {
-            ExplainProgram();
-            return EXIT_SUCCESS;
-        }
-
-        InvalidFlags();
-        return EXIT_FAILURE;
+        return ProcessHelp(argv);
     }
 
     else if (argc == 3)
     {
-        if (strcmp(argv[1], TEST_FLAG) == 0)
-        {
-            if (RunAllTests(argv[2]))
-                return EXIT_SUCCESS;
-
-            return EXIT_FAILURE;
-        }
-
-        else if (strcmp(argv[1], READ_FLAG) == 0)
-        {
-            struct Equation equation_info = {};
-            const char* filename = argv[2];
-
-            if (!ReadCoeffs(filename, &equation_info))
-                return EXIT_FAILURE;
-
-            SolveQuadratic(&equation_info);
-
-            Thinking();
-
-            ShowProgramResults(&equation_info.roots);
-
-            EndConversationAI();
-
+        if (ProcessTest(argv) == EXIT_SUCCESS || ProcessRead(argv) == EXIT_SUCCESS || ProcessWrite(argv) == EXIT_SUCCESS)
             return EXIT_SUCCESS;
-        }
-
-        else if (strcmp(argv[1], WRITE_FLAG) == 0)
-        {
-            StartConversationAI();
-
-            struct Equation equation_info = {};
-            const char* filename = argv[2];
-
-            GreetUser();
-
-            if (!GetAllCoeffs(&equation_info.coeffs))
-            {
-                ProgramFailed();
-                EndConversationAI();
-                return EXIT_FAILURE;
-            }
-
-            SolveQuadratic(&equation_info);
-
-            Thinking();
-
-            if (WriteRoots(filename, &equation_info))
-            {
-                EndConversationAI();
-                return EXIT_SUCCESS;
-            }
-
-            return EXIT_FAILURE;
-        }
 
         InvalidFlags();
         return EXIT_FAILURE;
@@ -172,3 +197,4 @@ int ProcessFlags(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 }
+

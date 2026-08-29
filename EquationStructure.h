@@ -9,7 +9,6 @@ enum Roots
     TWO = 2
 };
 
-
 struct Coefficients
 {
     double a;

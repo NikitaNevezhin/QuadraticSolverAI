@@ -2,6 +2,10 @@
 
 #define ColorPrint_h
 
+#define BOLD        "\033[1m"
+#define UNDERLINE   "\033[4m"
+#define INVERSION   "\033[7m"
+
 #define BLACK       "\033[30m"
 #define RED         "\033[31m"
 #define GREEN       "\033[32m"

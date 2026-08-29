@@ -18,35 +18,33 @@
 
 int main(int argc, char* argv[])
 {
-    if (argc == 1)
+    if (argc > 1)
     {
-        StartConversationAI();
-
-        struct Equation equation_info = {};
-
-        GreetUser();
-
-        if (!GetAllCoeffs(&equation_info.coeffs))
-        {
-            ProgramFailed();
-            EndConversationAI();
-            return EXIT_FAILURE;
-        }
-
-        SolveQuadratic(&equation_info);
-
-        Thinking();
-
-        ShowProgramResults(&equation_info.roots);
-
-        EndConversationAI();
-
-        return EXIT_SUCCESS;
+        return ProcessFlags(argc, argv);
     }
 
-    else
-        return ProcessFlags(argc, argv);
+    StartConversationAI();
 
+    struct Equation equation_info = {};
+
+    GreetUser();
+
+    if (!GetAllCoeffs(&equation_info.coeffs))
+    {
+        ProgramFailed();
+        EndConversationAI();
+        return EXIT_FAILURE;
+    }
+
+    SolveQuadratic(&equation_info);
+
+    Thinking();
+
+    ShowProgramResults(&equation_info.roots);
+
+    EndConversationAI();
+
+    return EXIT_SUCCESS;
 }
 
 
