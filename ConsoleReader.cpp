@@ -78,7 +78,7 @@ int ProcessHelp(char* argv[])
 
 int ProcessTest(char* argv[])
 {
-    printf("Executing ProcessTest...\n");
+    // printf("Executing ProcessTest...\n");
     if (strcmp(argv[1], TEST_FLAG) != 0 && strcmp(argv[1], LONG_TEST_FLAG) != 0)
         return EXIT_FAILURE;
     RunAllTests(argv[2]);
@@ -87,7 +87,7 @@ int ProcessTest(char* argv[])
 
 int ProcessRead(char *argv[])
 {
-    printf("Executing ProcessRead...\n");
+    // printf("Executing ProcessRead...\n");
     if (strcmp(argv[1], READ_FLAG) != 0 && strcmp(argv[1], LONG_READ_FLAG) != 0)
     {
         return EXIT_FAILURE;
