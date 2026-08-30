@@ -19,27 +19,30 @@
 #define WRITE_FLAG       "-w"
 #define READ_WRITE_FLAG  "-rw"
 
-#define LONG_HELP_FLAG   "--help"
-#define LONG_TEST_FLAG   "--test"
-#define LONG_READ_FLAG   "--read"
-#define LONG_WRITE_FLAG  "--write"
+#define LONG_HELP_FLAG        "--help"
+#define LONG_TEST_FLAG        "--test"
+#define LONG_READ_FLAG        "--read"
+#define LONG_WRITE_FLAG       "--write"
+#define LONG_READ_WRITE_FLAG  "--readwrite"
 
-void ExplainProgram  (void);
+void ExplainProgram   (void);
 
-void InvalidFlags    (void);
+void InvalidFlags     (void);
 
-int  ProcessFlags    (int argc, char *argv[]);
+int  ProcessFlags     (int argc, char *argv[]);
 
-int  ProcessHelp     (char* argv[]);
+int  ProcessHelp      (char* argv[]);
 
-int  ProcessTest     (char* argv[]);
+int  ProcessTest      (char* argv[]);
 
-int  ProcessRead     (char *argv[]);
+int  ProcessRead      (char *argv[]);
 
-int  ProcessWrite    (char *argv[]);
+int  ProcessWrite     (char *argv[]);
 
-bool ReadCoeffs      (const char* filename, struct Equation* equation_info);
+int  ProcessReadWrite (char *argv[]);
 
-bool WriteRoots      (const char* filename, struct Equation* equation_info);
+bool ReadCoeffs       (const char* filename, struct Equation* equation_info);
+
+bool WriteRoots       (const char* filename, struct Equation* equation_info);
 
 #endif

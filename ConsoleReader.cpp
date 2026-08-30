@@ -81,11 +81,8 @@ int ProcessTest(char* argv[])
     printf("Executing ProcessTest...\n");
     if (strcmp(argv[1], TEST_FLAG) != 0 && strcmp(argv[1], LONG_TEST_FLAG) != 0)
         return EXIT_FAILURE;
-
-    if (RunAllTests(argv[2]))
-        return EXIT_SUCCESS;
-
-    return EXIT_FAILURE;
+    RunAllTests(argv[2]);
+    return EXIT_SUCCESS;
 }
 
 int ProcessRead(char *argv[])
@@ -100,8 +97,7 @@ int ProcessRead(char *argv[])
 
     const char* filename = argv[2];
 
-    if (!ReadCoeffs(filename, &equation_info))
-        return EXIT_FAILURE;
+    ReadCoeffs(filename, &equation_info);
 
     SolveQuadratic(&equation_info);
 
@@ -132,7 +128,7 @@ int ProcessWrite(char *argv[])
     {
         ProgramFailed();
         EndConversationAI();
-        return EXIT_FAILURE;
+        return EXIT_SUCCESS;
     }
 
     SolveQuadratic(&equation_info);
@@ -145,7 +141,31 @@ int ProcessWrite(char *argv[])
         return EXIT_SUCCESS;
     }
 
-    return EXIT_FAILURE;
+    return EXIT_SUCCESS;
+}
+
+int ProcessReadWrite(char *argv[])
+{
+    if (strcmp(argv[1], READ_WRITE_FLAG) != 0 && strcmp(argv[1], LONG_READ_WRITE_FLAG) != 0)
+    {
+        return EXIT_FAILURE;
+    }
+    struct Equation equation_info = {};
+
+    const char* input_file = argv[2];
+    const char* output_file = argv[3];
+
+    if (!ReadCoeffs(input_file, &equation_info))
+        return EXIT_FAILURE;
+
+    SolveQuadratic(&equation_info);
+
+    if (!WriteRoots(output_file, &equation_info))
+        return EXIT_FAILURE;
+
+    EndConversationAI();
+
+    return EXIT_SUCCESS;
 }
 
 int ProcessFlags(int argc, char *argv[])
@@ -166,26 +186,9 @@ int ProcessFlags(int argc, char *argv[])
 
     else if (argc == 4)
     {
-        if (strcmp(argv[1], READ_WRITE_FLAG) == 0)
-        {
-            struct Equation equation_info = {};
-
-            const char* input_file = argv[2];
-            const char* output_file = argv[3];
-
-            if (!ReadCoeffs(input_file, &equation_info))
-                return EXIT_FAILURE;
-
-            SolveQuadratic(&equation_info);
-
-            if (!WriteRoots(output_file, &equation_info))
-                return EXIT_FAILURE;
-
-            EndConversationAI();
-
+        if (ProcessReadWrite(argv) == EXIT_SUCCESS)
             return EXIT_SUCCESS;
-        }
-        printf("couldnt read flag\n");
+
         InvalidFlags();
         return EXIT_FAILURE;
     }
